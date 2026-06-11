@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Routes,
   Route,
@@ -18,17 +18,20 @@ import UserPage from "./pages/UserPage";
 import FundPage from "./pages/FundPage";
 import ExpensePage from "./pages/ExpensePage";
 import StatisticPage from "./pages/StatisticPage";
+import SettingsPage from "./pages/SettingsPage";
+import FormulaPage from "./pages/FormulaPage";
 
 function App() {
   const [token, setToken] = useState<string | null>(
-    localStorage.getItem("accessToken") || localStorage.getItem("token")
+    localStorage.getItem("accessToken") || localStorage.getItem("token"),
   );
 
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("accessToken") || localStorage.getItem("token");
+    const savedToken =
+      localStorage.getItem("accessToken") || localStorage.getItem("token");
     setToken(savedToken);
   }, [location.pathname]);
 
@@ -48,13 +51,13 @@ function App() {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route 
-        path="/login" 
-        element={token ? <Navigate to="/" replace /> : <LoginPage onLogin={handleLoginSuccess} />} 
+      <Route
+        path="/login"
+        element={token ? <Navigate to="/" replace /> : <LoginPage />}
       />
-      <Route 
-        path="/signup" 
-        element={token ? <Navigate to="/" replace /> : <SignUpPage />} 
+      <Route
+        path="/signup"
+        element={<Navigate to="/login" replace />}
       />
 
       {/* Protected Routes */}
@@ -66,9 +69,14 @@ function App() {
         <Route path="/fund" element={<FundPage />} />
         <Route path="/expense" element={<ExpensePage />} />
         <Route path="/statistic" element={<StatisticPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/formulas" element={<FormulaPage />} />
       </Route>
 
-      <Route path="*" element={<Navigate to={token ? "/" : "/login"} replace />} />
+      <Route
+        path="*"
+        element={<Navigate to={token ? "/" : "/login"} replace />}
+      />
     </Routes>
   );
 }

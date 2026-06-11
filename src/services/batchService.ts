@@ -2,17 +2,23 @@ import apiService from './api';
 
 export type BatchProduct = {
 	id: number;
-	name: string;
-	description?: string | null;
-	image?: string | null;
-	price?: number | null;
+	batchId: number;
+	imageUrl: string;
+	price: number;
+	status: "AVAILABLE" | "DEPOSIT" | "SOLD";
 };
 
 export type Batch = {
 	id: number;
 	name: string;
-	description?: string | null;
-	products?: BatchProduct[];
+	jpyAmount: number | string;
+	exchangeRate: number | string;
+	domesticShipJpy: number | string;
+	shippingToVn: number | string;
+	serviceFeeRate: number | string;
+	url?: string | null;
+	thumbnail?: string | null;
+	products: BatchProduct[];
 };
 
 export type SellPayload = {
@@ -43,3 +49,28 @@ export const updateBatch = async (batchId: string | number, data: Partial<Batch>
 	const response = await apiService.put(`/batch/${batchId}`, data);
 	return response.data;
 }
+
+export const createBatch = async (data: any) => {
+	const response = await apiService.post<Batch>('/batch', data);
+	return response.data;
+};
+
+export const addProductToBatch = async (batchId: string | number, data: { imageUrl: string }) => {
+	const response = await apiService.post(`/batch/${batchId}/products`, data);
+	return response.data;
+};
+
+export const addProductsWithImagesUpload = async (
+	batchId: string | number, 
+	files: File[],
+	onUploadProgress?: (progressEvent: any) => void
+) => {
+	const formData = new FormData();
+	files.forEach((file) => {
+		formData.append('files', file);
+	});
+	const response = await apiService.upload(`/batch/${batchId}/products/uploads`, formData, {
+		onUploadProgress
+	});
+	return response.data;
+};
