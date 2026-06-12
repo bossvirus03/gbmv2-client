@@ -5,6 +5,7 @@ import {
   useOrderItemsQuery,
   useSellProductMutation,
   useUpdateSaleMutation,
+  useDeleteProductMutation,
 } from "@/hooks/useBatches";
 import { useSettingsQuery } from "@/hooks/useSettings";
 import { downloadImagesAsZip } from "@/lib/downloadHelper";
@@ -41,6 +42,10 @@ const BatchListPage = () => {
 
   const updateSaleMutation = useUpdateSaleMutation(() => {
     toast.success("Cập nhật thông tin giao dịch thành công!");
+  });
+
+  const deleteProductMutation = useDeleteProductMutation(() => {
+    toast.success("Đã xóa sản phẩm khỏi lô hàng!");
   });
 
   // Tính toán số liệu tổng hợp
@@ -121,6 +126,16 @@ const BatchListPage = () => {
     } catch (err: any) {
       console.error(err);
       toast.error("❌ Có lỗi xảy ra khi cập nhật giao dịch!");
+      throw err;
+    }
+  };
+
+  const handleDeleteProduct = async (batchId: number, productId: number) => {
+    try {
+      await deleteProductMutation.mutateAsync({ batchId, productId });
+    } catch (err: any) {
+      console.error(err);
+      toast.error("❌ Có lỗi xảy ra khi xóa sản phẩm!");
       throw err;
     }
   };
@@ -325,6 +340,7 @@ const BatchListPage = () => {
             orderItems={orderItems}
             onSaleSubmit={handleSale}
             onSaleUpdate={handleUpdateSale}
+            onDeleteProduct={(productId) => handleDeleteProduct(batch.id, productId)}
             downloadAllImagesInBatch={downloadAllImagesInBatch}
           />
         ))}

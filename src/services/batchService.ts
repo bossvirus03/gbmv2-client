@@ -60,6 +60,11 @@ export const addProductToBatch = async (batchId: string | number, data: { imageU
 	return response.data;
 };
 
+export const deleteProduct = async (batchId: string | number, productId: number) => {
+	const response = await apiService.delete(`/batch/${batchId}/products/${productId}`);
+	return response.data;
+};
+
 export const addProductsWithImagesUpload = async (
 	batchId: string | number, 
 	files: File[],

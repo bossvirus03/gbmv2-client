@@ -21,6 +21,7 @@ interface BatchItemProps {
   orderItems: any[];
   onSaleSubmit: (productId: number, form: any) => Promise<void>;
   onSaleUpdate: (productId: number, orderItemId: number, form: any) => Promise<void>;
+  onDeleteProduct: (productId: number) => Promise<void> | void;
   downloadAllImagesInBatch: (batch: Batch) => void;
 }
 
@@ -33,6 +34,7 @@ export const BatchItem: React.FC<BatchItemProps> = ({
   orderItems,
   onSaleSubmit,
   onSaleUpdate,
+  onDeleteProduct,
   downloadAllImagesInBatch,
 }) => {
   const jpy = Number(batch.jpyAmount || 0);
@@ -248,6 +250,7 @@ export const BatchItem: React.FC<BatchItemProps> = ({
               orderItems={orderItems}
               onSubmitSale={onSaleSubmit}
               onUpdateSale={onSaleUpdate}
+              onDeleteProduct={onDeleteProduct}
             />
           </div>
         </div>

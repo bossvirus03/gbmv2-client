@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getBatches, updateBatch, createBatch, addProductToBatch, addProductsWithImagesUpload, Batch } from "@/services/batchService";
+import { getBatches, updateBatch, createBatch, addProductToBatch, addProductsWithImagesUpload, deleteProduct, Batch } from "@/services/batchService";
 import { getCustomers, createCustomer, updateCustomer } from "@/services/customerService";
 import { createOrder, updateOrder, createSellOrder } from "@/services/orderService";
 import { createOrderItem, getOrderItems, updateOrderItem, OrderItem } from "@/services/orderItemService";
@@ -144,6 +144,18 @@ export const useUpdateSaleMutation = (onSuccessCallback?: () => void) => {
       queryClient.invalidateQueries({ queryKey: ["batches"] });
       queryClient.invalidateQueries({ queryKey: ["orderItems"] });
       queryClient.invalidateQueries({ queryKey: ["customers"] });
+      if (onSuccessCallback) onSuccessCallback();
+    },
+  });
+};
+
+export const useDeleteProductMutation = (onSuccessCallback?: () => void) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ batchId, productId }: { batchId: number; productId: number }) =>
+      deleteProduct(batchId, productId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["batches"] });
       if (onSuccessCallback) onSuccessCallback();
     },
   });

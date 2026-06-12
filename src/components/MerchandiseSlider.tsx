@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { X, User, Phone, DollarSign, Coins, FileText, CheckCircle2, ShoppingBag, Loader2 } from "lucide-react";
+import { X, User, Phone, DollarSign, Coins, FileText, CheckCircle2, ShoppingBag, Loader2, Trash2 } from "lucide-react";
 import { OrderItem } from "@/services/orderItemService";
 import { useCustomersQuery } from "@/hooks/useCustomers";
 import { formatNumberInput, parseNumberInput } from "@/lib/utils";
@@ -27,9 +27,10 @@ type MerchandiseSliderProps = {
   orderItems: OrderItem[];
   onSubmitSale: (productId: number, form: SaleForm) => Promise<void> | void;
   onUpdateSale: (productId: number, orderItemId: number, form: SaleForm) => Promise<void> | void;
+  onDeleteProduct?: (productId: number) => Promise<void> | void;
 };
 
-function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSale }: MerchandiseSliderProps) {
+function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSale, onDeleteProduct }: MerchandiseSliderProps) {
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
   const [editingOrderItemId, setEditingOrderItemId] = useState<number | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -169,7 +170,7 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
                 )}
               </div>
 
-              <div className="p-2 flex-1 flex flex-col justify-end">
+              <div className="p-2 flex-1 flex flex-col justify-end gap-1.5">
                 {isSold ? (
                   <button
                     onClick={() => openForm(product.id)}
@@ -185,12 +186,28 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
                     Sửa cọc
                   </button>
                 ) : (
-                  <button
-                    onClick={() => openForm(product.id)}
-                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-1.5 rounded-xl shadow-sm transition-all duration-200 active:scale-95 text-[10px] uppercase tracking-wider cursor-pointer"
-                  >
-                    Bán
-                  </button>
+                  <>
+                    <button
+                      onClick={() => openForm(product.id)}
+                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-1.5 rounded-xl shadow-sm transition-all duration-200 active:scale-95 text-[10px] uppercase tracking-wider cursor-pointer"
+                    >
+                      Bán
+                    </button>
+                    {onDeleteProduct && (
+                      <button
+                        onClick={() => {
+                          if (window.confirm('Bạn có chắc muốn xóa sản phẩm này khỏi lô hàng?')) {
+                            onDeleteProduct(product.id);
+                          }
+                        }}
+                        className="w-full flex items-center justify-center gap-1 py-1.5 rounded-xl border border-red-200/50 text-red-500 hover:bg-red-50 transition-all duration-200 active:scale-95 text-[10px] uppercase tracking-wider cursor-pointer"
+                        title="Xóa sản phẩm"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        Xóa
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             </div>
