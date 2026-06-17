@@ -13,6 +13,7 @@ import {
   LogOut,
   ChevronDown,
   Calculator,
+  PlusCircle,
 } from "lucide-react";
 
 import {
@@ -29,6 +30,7 @@ import { getAccessToken, clearAccessToken } from "../lib/asyncLocalstoragate";
 
 const menuItems = [
   { name: "Trang chủ", path: "/", icon: Home },
+  { name: "Tạo đơn hàng", path: "/create-order", icon: PlusCircle },
   { name: "Batch", path: "/batch", icon: Package },
   { name: "Khách hàng", path: "/customer", icon: Users },
   { name: "Người dùng", path: "/user", icon: UserCog },

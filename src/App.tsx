@@ -20,6 +20,7 @@ import ExpensePage from "./pages/ExpensePage";
 import StatisticPage from "./pages/StatisticPage";
 import SettingsPage from "./pages/SettingsPage";
 import FormulaPage from "./pages/FormulaPage";
+import CreateOrderPage from "./pages/CreateOrderPage";
 
 function App() {
   const [token, setToken] = useState<string | null>(
@@ -71,6 +72,7 @@ function App() {
         <Route path="/statistic" element={<StatisticPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/formulas" element={<FormulaPage />} />
+        <Route path="/create-order" element={<CreateOrderPage />} />
       </Route>
 
       <Route

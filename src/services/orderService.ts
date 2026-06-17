@@ -41,7 +41,12 @@ export const getOrderById = async (id: number | string) => {
   return response.data;
 };
 
-export const createOrder = async (data: { customerId: number; note?: string }) => {
+export const createOrder = async (data: {
+  customerId: number;
+  note?: string;
+  items?: { productId: number; price: number; deposit: number }[];
+  status?: string;
+}) => {
   const response = await apiService.post<Order>('/order', data);
   return response.data;
 };

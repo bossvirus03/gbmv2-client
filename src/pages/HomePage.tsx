@@ -4,7 +4,7 @@ import { useCustomersQuery } from "@/hooks/useCustomers";
 import { useExpensesQuery } from "@/hooks/useExpenses";
 import { useOrderItemsQuery } from "@/hooks/useOrderItems";
 import { getAccessToken } from "@/lib/asyncLocalstoragate";
-import { ArrowRight, Package, Users, DollarSign, BarChart3, Sparkles } from "lucide-react";
+import { ArrowRight, Package, Users, DollarSign, BarChart3, Sparkles, PlusCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatVND } from "@/lib/utils";
 
@@ -143,6 +143,19 @@ function HomePage() {
       <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm">
         <h3 className="text-lg font-bold text-gray-800 mb-4">Lối tắt thao tác nhanh</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Link
+            to="/create-order"
+            className="flex items-center justify-between p-4 border border-gray-50 rounded-2xl hover:border-red-200 hover:bg-red-50/10 transition group"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
+                <PlusCircle size={20} />
+              </div>
+              <span className="font-semibold text-gray-700 text-sm">Tạo đơn hàng mới</span>
+            </div>
+            <ArrowRight size={18} className="text-gray-400 group-hover:translate-x-1 transition-transform" />
+          </Link>
+
           <Link
             to="/batch"
             className="flex items-center justify-between p-4 border border-gray-50 rounded-2xl hover:border-blue-200 hover:bg-blue-50/10 transition group"
