@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useBatchesQuery } from "@/hooks/useBatches";
 import { useCustomersQuery } from "@/hooks/useCustomers";
 import { useExpensesQuery } from "@/hooks/useExpenses";
