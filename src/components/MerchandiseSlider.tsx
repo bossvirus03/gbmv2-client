@@ -1,10 +1,20 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { X, User, Phone, DollarSign, Coins, FileText, CheckCircle2, ShoppingBag, Loader2, Trash2 } from "lucide-react";
+import {
+  X,
+  User,
+  Phone,
+  DollarSign,
+  Coins,
+  FileText,
+  CheckCircle2,
+  ShoppingBag,
+  Loader2,
+  Trash2,
+} from "lucide-react";
 import { OrderItem } from "@/services/orderItemService";
 import { useCustomersQuery } from "@/hooks/useCustomers";
 import { formatNumberInput, parseNumberInput } from "@/lib/utils";
-
 
 type Product = {
   id: number;
@@ -26,20 +36,41 @@ type MerchandiseSliderProps = {
   products: Product[];
   orderItems: OrderItem[];
   onSubmitSale: (productId: number, form: SaleForm) => Promise<void> | void;
-  onUpdateSale: (productId: number, orderItemId: number, form: SaleForm) => Promise<void> | void;
+  onUpdateSale: (
+    productId: number,
+    orderItemId: number,
+    form: SaleForm,
+  ) => Promise<void> | void;
   onDeleteProduct?: (productId: number) => Promise<void> | void;
 };
 
-function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSale, onDeleteProduct }: MerchandiseSliderProps) {
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
-  const [editingOrderItemId, setEditingOrderItemId] = useState<number | null>(null);
+function MerchandiseSlider({
+  products,
+  orderItems = [],
+  onSubmitSale,
+  onUpdateSale,
+  onDeleteProduct,
+}: MerchandiseSliderProps) {
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(
+    null,
+  );
+  const [editingOrderItemId, setEditingOrderItemId] = useState<number | null>(
+    null,
+  );
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [customerNameInput, setCustomerNameInput] = useState("");
 
   // Fetch danh sách khách hàng cũ
   const { data: customers = [] } = useCustomersQuery();
-  
-  const { register, handleSubmit, reset, watch, setValue, formState: { isSubmitting, errors } } = useForm<SaleForm>({
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    setValue,
+    formState: { isSubmitting, errors },
+  } = useForm<SaleForm>({
     defaultValues: {
       customerName: "",
       customerPhone: "",
@@ -47,23 +78,23 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
       deposit: "",
       status: "DEPOSIT",
       note: "",
-    }
+    },
   });
 
   const selectedStatus = watch("status");
 
   // Lọc danh sách khách hàng dựa trên state gõ của input
   const filteredCustomers = customers.filter((c) =>
-    c.name.toLowerCase().includes(customerNameInput.toLowerCase())
+    c.name.toLowerCase().includes(customerNameInput.toLowerCase()),
   );
 
   const openForm = (productId: number) => {
     setSelectedProductId(productId);
     setShowSuggestions(false);
-    
+
     // Tìm kiếm xem sản phẩm này đã có đơn hàng giao dịch nào chưa
     const currentItem = orderItems.find((oi) => oi.productId === productId);
-    
+
     if (currentItem) {
       setEditingOrderItemId(currentItem.id);
       const name = currentItem.order?.customer?.name || "";
@@ -73,10 +104,12 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
         customerPhone: currentItem.order?.customer?.phone || "",
         price: formatNumberInput(String(currentItem.price || "")),
         deposit: formatNumberInput(String(currentItem.deposit || "")),
-        status: products.find((p) => p.id === productId)?.status === "SOLD" ? "SOLD" : "DEPOSIT",
+        status:
+          products.find((p) => p.id === productId)?.status === "SOLD"
+            ? "SOLD"
+            : "DEPOSIT",
         note: currentItem.order?.note || "",
       });
-
     } else {
       setEditingOrderItemId(null);
       setCustomerNameInput("");
@@ -104,7 +137,9 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
       const parsedData = {
         ...data,
         price: String(parseNumberInput(data.price)),
-        deposit: data.deposit ? String(parseNumberInput(data.deposit)) : undefined,
+        deposit: data.deposit
+          ? String(parseNumberInput(data.deposit))
+          : undefined,
       };
       if (editingOrderItemId) {
         // Nếu đang chỉnh sửa giao dịch cũ
@@ -119,9 +154,12 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
     }
   };
 
-
   if (products.length === 0) {
-    return <div className="text-center py-12 text-gray-500 font-medium">Chưa có sản phẩm trong batch này.</div>;
+    return (
+      <div className="text-center py-12 text-gray-500 font-medium">
+        Chưa có sản phẩm trong batch này.
+      </div>
+    );
   }
 
   // Sắp xếp sản phẩm: AVAILABLE -> DEPOSIT -> SOLD
@@ -142,8 +180,8 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
           const cardBgClass = isSold
             ? "bg-gray-50/70 border-gray-200/40 opacity-75 hover:opacity-100 transition-opacity"
             : isDeposit
-            ? "bg-amber-50/25 border-amber-200/35 hover:bg-amber-50/40"
-            : "bg-white border-gray-100/80 hover:bg-gray-50/10";
+              ? "bg-amber-50/25 border-amber-200/35 hover:bg-amber-50/40"
+              : "bg-white border-gray-100/80 hover:bg-gray-50/10";
 
           return (
             <div
@@ -156,7 +194,7 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
                   alt="product"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                
+
                 {/* Status Badges ở dạng Tag nhỏ ở góc trên bên trái */}
                 {isSold && (
                   <span className="absolute top-1.5 left-1.5 z-10 bg-red-600/95 text-white text-[8px] font-extrabold px-1.5 py-0.5 rounded-md shadow-sm uppercase tracking-wider backdrop-blur-sm">
@@ -196,7 +234,11 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
                     {onDeleteProduct && (
                       <button
                         onClick={() => {
-                          if (window.confirm('Bạn có chắc muốn xóa sản phẩm này khỏi lô hàng?')) {
+                          if (
+                            window.confirm(
+                              "Bạn có chắc muốn xóa sản phẩm này khỏi lô hàng?",
+                            )
+                          ) {
                             onDeleteProduct(product.id);
                           }
                         }}
@@ -219,7 +261,6 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
       {selectedProductId && (
         <div className="fixed inset-0 bg-black/55 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
           <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl border border-gray-100 overflow-hidden flex flex-col transform transition-all max-h-[90vh]">
-            
             {/* Header */}
             <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
               <div className="flex items-center gap-2">
@@ -227,7 +268,9 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
                   <ShoppingBag className="w-4 h-4" />
                 </div>
                 <h3 className="text-lg font-bold text-gray-800">
-                  {editingOrderItemId ? "Chỉnh sửa giao dịch" : "Thông tin bán hàng"}
+                  {editingOrderItemId
+                    ? "Chỉnh sửa giao dịch"
+                    : "Thông tin bán hàng"}
                 </h3>
               </div>
               <button
@@ -239,9 +282,11 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
             </div>
 
             {/* Form Content */}
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-1 overflow-hidden">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col flex-1 overflow-hidden"
+            >
               <div className="p-6 space-y-4 overflow-y-auto flex-1">
-                
                 {/* Trạng thái Bán hàng (Radio Cards) */}
                 <div className="space-y-2">
                   <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider">
@@ -261,8 +306,12 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
                         {...register("status")}
                         className="sr-only"
                       />
-                      <Coins className={`w-5 h-5 mb-1 ${selectedStatus === "DEPOSIT" ? "text-amber-500" : "text-gray-400"}`} />
-                      <span className="text-xs font-bold uppercase tracking-wider">Đặt cọc</span>
+                      <Coins
+                        className={`w-5 h-5 mb-1 ${selectedStatus === "DEPOSIT" ? "text-amber-500" : "text-gray-400"}`}
+                      />
+                      <span className="text-xs font-bold uppercase tracking-wider">
+                        Đặt cọc
+                      </span>
                     </label>
 
                     <label
@@ -278,8 +327,12 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
                         {...register("status")}
                         className="sr-only"
                       />
-                      <CheckCircle2 className={`w-5 h-5 mb-1 ${selectedStatus === "SOLD" ? "text-green-600" : "text-gray-400"}`} />
-                      <span className="text-xs font-bold uppercase tracking-wider">Đã bán</span>
+                      <CheckCircle2
+                        className={`w-5 h-5 mb-1 ${selectedStatus === "SOLD" ? "text-green-600" : "text-gray-400"}`}
+                      />
+                      <span className="text-xs font-bold uppercase tracking-wider">
+                        Đã bán
+                      </span>
                     </label>
                   </div>
                 </div>
@@ -294,42 +347,54 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
                     <input
                       type="text"
                       placeholder="Nhập tên khách hàng"
-                      {...register("customerName", { 
+                      {...register("customerName", {
                         required: "Vui lòng nhập tên khách hàng",
-                        onChange: (e) => setCustomerNameInput(e.target.value)
+                        onChange: (e) => setCustomerNameInput(e.target.value),
                       })}
                       onFocus={() => setShowSuggestions(true)}
-                      onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                      onBlur={() =>
+                        setTimeout(() => setShowSuggestions(false), 200)
+                      }
                       className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-2xl focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-sm transition-all duration-200 bg-gray-50/30 focus:bg-white"
                       autoComplete="off"
                     />
                   </div>
                   {errors.customerName && (
-                    <p className="text-xs text-red-500 mt-1 ml-2 font-medium">{errors.customerName.message}</p>
+                    <p className="text-xs text-red-500 mt-1 ml-2 font-medium">
+                      {errors.customerName.message}
+                    </p>
                   )}
 
                   {/* Gợi ý khách hàng cũ */}
-                  {showSuggestions && customerNameInput && filteredCustomers.length > 0 && (
-                    <div className="absolute z-30 w-full left-0 bg-white border border-gray-200 rounded-2xl mt-1 max-h-48 overflow-y-auto shadow-2xl py-1.5 animate-fade-in pointer-events-auto">
-                      <p className="px-3.5 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Khách hàng cũ</p>
-                      {filteredCustomers.map((customer) => (
-                        <div
-                          key={customer.id}
-                          onMouseDown={(e) => {
-                            e.preventDefault(); // Ngăn input bị blur
-                            setValue("customerName", customer.name);
-                            setValue("customerPhone", customer.phone);
-                            setCustomerNameInput(customer.name);
-                            setShowSuggestions(false);
-                          }}
-                          className="px-3.5 py-2 hover:bg-blue-50/60 cursor-pointer flex justify-between items-center transition"
-                        >
-                          <span className="text-sm font-semibold text-gray-800">{customer.name}</span>
-                          <span className="text-xs font-medium text-gray-400 font-mono">{customer.phone}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  {showSuggestions &&
+                    customerNameInput &&
+                    filteredCustomers.length > 0 && (
+                      <div className="absolute z-30 w-full left-0 bg-white border border-gray-200 rounded-2xl mt-1 max-h-48 overflow-y-auto shadow-2xl py-1.5 animate-fade-in pointer-events-auto">
+                        <p className="px-3.5 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                          Khách hàng cũ
+                        </p>
+                        {filteredCustomers.map((customer) => (
+                          <div
+                            key={customer.id}
+                            onMouseDown={(e) => {
+                              e.preventDefault(); // Ngăn input bị blur
+                              setValue("customerName", customer.name);
+                              setValue("customerPhone", customer.phone);
+                              setCustomerNameInput(customer.name);
+                              setShowSuggestions(false);
+                            }}
+                            className="px-3.5 py-2 hover:bg-blue-50/60 cursor-pointer flex justify-between items-center transition"
+                          >
+                            <span className="text-sm font-semibold text-gray-800">
+                              {customer.name}
+                            </span>
+                            <span className="text-xs font-medium text-gray-400 font-mono">
+                              {customer.phone}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                 </div>
 
                 {/* Số điện thoại */}
@@ -368,9 +433,10 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
                     />
                   </div>
                   {errors.price && (
-                    <p className="text-xs text-red-500 mt-1 ml-2 font-medium">{errors.price.message}</p>
+                    <p className="text-xs text-red-500 mt-1 ml-2 font-medium">
+                      {errors.price.message}
+                    </p>
                   )}
-
                 </div>
 
                 {/* Tiền cọc (chỉ hiện khi chọn Đặt cọc) */}
@@ -393,12 +459,13 @@ function MerchandiseSlider({ products, orderItems = [], onSubmitSale, onUpdateSa
                       />
                     </div>
                   </div>
-
                 ) : (
                   <div className="p-3 bg-green-50 border border-green-100 rounded-2xl flex items-start gap-2.5 animate-fade-in">
                     <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
                     <p className="text-[11px] text-green-800 leading-normal font-medium">
-                      Khi chọn trạng thái <strong>Đã bán</strong>, hệ thống sẽ tự động ghi nhận số tiền đã thanh toán bằng đúng với <strong>Giá bán</strong> sản phẩm.
+                      Khi chọn trạng thái <strong>Đã bán</strong>, hệ thống sẽ
+                      tự động ghi nhận số tiền đã thanh toán bằng đúng với{" "}
+                      <strong>Giá bán</strong> sản phẩm.
                     </p>
                   </div>
                 )}

@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { useCreateBatchMutation } from "@/hooks/useBatches";
 import { formatNumberInput, parseNumberInput, formatVND } from "@/lib/utils";
 import { useToast } from "@/contexts/ToastContext";
-import { Coins, TrendingUp, Percent, Truck } from "lucide-react";
 
 interface CreateBatchModalProps {
   isOpen: boolean;
@@ -112,7 +111,10 @@ export const CreateBatchModal: React.FC<CreateBatchModalProps> = ({
           Tạo lô hàng mới
         </h2>
 
-        <form onSubmit={createForm.handleSubmit(onSubmitCreate)} className="space-y-5">
+        <form
+          onSubmit={createForm.handleSubmit(onSubmitCreate)}
+          className="space-y-5"
+        >
           <div>
             <label className="block text-sm font-semibold mb-1.5 text-gray-700">
               Tên lô hàng *
@@ -161,9 +163,7 @@ export const CreateBatchModal: React.FC<CreateBatchModalProps> = ({
               <input
                 type="text"
                 placeholder={
-                  settings?.exchangeRate
-                    ? String(settings.exchangeRate)
-                    : "0"
+                  settings?.exchangeRate ? String(settings.exchangeRate) : "0"
                 }
                 {...createForm.register("exchangeRate", {
                   required: "Vui lòng nhập tỷ giá",
@@ -262,9 +262,7 @@ export const CreateBatchModal: React.FC<CreateBatchModalProps> = ({
               type="number"
               step="0.01"
               placeholder={
-                settings?.serviceFeeRate
-                  ? String(settings.serviceFeeRate)
-                  : "0"
+                settings?.serviceFeeRate ? String(settings.serviceFeeRate) : "0"
               }
               {...createForm.register("serviceFeeRate")}
               className="w-full border border-gray-200 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"

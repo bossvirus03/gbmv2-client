@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useToast } from "@/contexts/ToastContext";
 import {
   useBatchesQuery,
@@ -340,7 +340,9 @@ const BatchListPage = () => {
             orderItems={orderItems}
             onSaleSubmit={handleSale}
             onSaleUpdate={handleUpdateSale}
-            onDeleteProduct={(productId) => handleDeleteProduct(batch.id, productId)}
+            onDeleteProduct={(productId) =>
+              handleDeleteProduct(batch.id, productId)
+            }
             downloadAllImagesInBatch={downloadAllImagesInBatch}
           />
         ))}

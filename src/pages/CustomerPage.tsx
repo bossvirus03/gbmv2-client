@@ -1,6 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useCustomersQuery, useCreateCustomerMutation, useUpdateCustomerMutation, useDeleteCustomerMutation } from "@/hooks/useCustomers";
+import {
+  useCustomersQuery,
+  useCreateCustomerMutation,
+  useUpdateCustomerMutation,
+  useDeleteCustomerMutation,
+} from "@/hooks/useCustomers";
 import { Customer } from "@/services/customerService";
 import { UserPlus, Edit2, Trash2, Search, Phone, User } from "lucide-react";
 
@@ -16,7 +21,7 @@ function CustomerPage() {
 
   // React Query Custom Hooks
   const { data: customers = [], isLoading } = useCustomersQuery();
-  
+
   const createMutation = useCreateCustomerMutation(() => {
     alert("✅ Thêm khách hàng thành công!");
     closeModal();
@@ -32,7 +37,12 @@ function CustomerPage() {
   });
 
   // React Hook Form
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<CustomerFormField>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<CustomerFormField>();
 
   const openAddModal = () => {
     setEditingCustomer(null);
@@ -53,18 +63,21 @@ function CustomerPage() {
 
   const onSubmit = (data: CustomerFormField) => {
     if (editingCustomer) {
-      updateMutation.mutate({ id: editingCustomer.id, data }, {
-        onError: (err: any) => {
-          console.error(err);
-          alert(err?.response?.data?.message || "❌ Lỗi khi cập nhật");
-        }
-      });
+      updateMutation.mutate(
+        { id: editingCustomer.id, data },
+        {
+          onError: (err: any) => {
+            console.error(err);
+            alert(err?.response?.data?.message || "❌ Lỗi khi cập nhật");
+          },
+        },
+      );
     } else {
       createMutation.mutate(data, {
         onError: (err: any) => {
           console.error(err);
           alert(err?.response?.data?.message || "❌ Lỗi khi thêm khách hàng");
-        }
+        },
       });
     }
   };
@@ -75,7 +88,7 @@ function CustomerPage() {
         onError: (err: any) => {
           console.error(err);
           alert("❌ Lỗi khi xóa khách hàng hoặc khách hàng đang có đơn hàng!");
-        }
+        },
       });
     }
   };
@@ -84,15 +97,19 @@ function CustomerPage() {
   const filteredCustomers = customers.filter(
     (c) =>
       c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.phone.includes(searchTerm)
+      c.phone.includes(searchTerm),
   );
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Quản lý Khách hàng</h1>
-          <p className="text-sm text-gray-500 mt-1">Danh sách thông tin và lịch sử giao dịch của khách hàng</p>
+          <h1 className="text-3xl font-bold text-gray-800">
+            Quản lý Khách hàng
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Danh sách thông tin và lịch sử giao dịch của khách hàng
+          </p>
         </div>
         <button
           onClick={openAddModal}
@@ -117,7 +134,9 @@ function CustomerPage() {
 
       {/* Main List */}
       {isLoading ? (
-        <div className="text-center py-12 text-gray-500">Đang tải danh sách khách hàng...</div>
+        <div className="text-center py-12 text-gray-500">
+          Đang tải danh sách khách hàng...
+        </div>
       ) : filteredCustomers.length === 0 ? (
         <div className="bg-white rounded-3xl p-12 text-center text-gray-500 border border-gray-100 shadow-sm">
           🔍 Không tìm thấy khách hàng nào phù hợp.
@@ -184,10 +203,16 @@ function CustomerPage() {
                 <input
                   type="text"
                   placeholder="Nhập họ tên khách hàng"
-                  {...register("name", { required: "Vui lòng nhập tên khách hàng" })}
+                  {...register("name", {
+                    required: "Vui lòng nhập tên khách hàng",
+                  })}
                   className="w-full px-5 py-4 border border-gray-200 rounded-2xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-sm"
                 />
-                {errors.name && <p className="text-xs text-red-500 mt-1 ml-2">{errors.name.message}</p>}
+                {errors.name && (
+                  <p className="text-xs text-red-500 mt-1 ml-2">
+                    {errors.name.message}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -206,7 +231,11 @@ function CustomerPage() {
                   })}
                   className="w-full px-5 py-4 border border-gray-200 rounded-2xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-sm"
                 />
-                {errors.phone && <p className="text-xs text-red-500 mt-1 ml-2">{errors.phone.message}</p>}
+                {errors.phone && (
+                  <p className="text-xs text-red-500 mt-1 ml-2">
+                    {errors.phone.message}
+                  </p>
+                )}
               </div>
 
               <div className="flex gap-3 pt-4">
@@ -222,7 +251,11 @@ function CustomerPage() {
                   disabled={isSubmitting}
                   className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl transition cursor-pointer text-sm"
                 >
-                  {isSubmitting ? "Đang xử lý..." : editingCustomer ? "Lưu thay đổi" : "Tạo mới"}
+                  {isSubmitting
+                    ? "Đang xử lý..."
+                    : editingCustomer
+                      ? "Lưu thay đổi"
+                      : "Tạo mới"}
                 </button>
               </div>
             </form>

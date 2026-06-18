@@ -1,14 +1,7 @@
 import { useState, useEffect } from "react";
-import {
-  Routes,
-  Route,
-  useNavigate,
-  useLocation,
-  Navigate,
-} from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
-import SignUpPage from "./pages/SignUpPage";
 import SidebarLayout from "./layouts/SidebarLayout";
 
 import HomePage from "./pages/HomePage";
@@ -27,7 +20,6 @@ function App() {
     localStorage.getItem("accessToken") || localStorage.getItem("token"),
   );
 
-  const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
@@ -36,19 +28,6 @@ function App() {
     setToken(savedToken);
   }, [location.pathname]);
 
-  const handleLoginSuccess = (newToken: string) => {
-    localStorage.setItem("accessToken", newToken);
-    setToken(newToken);
-    navigate("/");
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("token");
-    setToken(null);
-    navigate("/login");
-  };
-
   return (
     <Routes>
       {/* Public Routes */}
@@ -56,10 +35,7 @@ function App() {
         path="/login"
         element={token ? <Navigate to="/" replace /> : <LoginPage />}
       />
-      <Route
-        path="/signup"
-        element={<Navigate to="/login" replace />}
-      />
+      <Route path="/signup" element={<Navigate to="/login" replace />} />
 
       {/* Protected Routes */}
       <Route element={<SidebarLayout />}>

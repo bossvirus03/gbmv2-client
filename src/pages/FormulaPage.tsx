@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSettingsQuery } from "@/hooks/useSettings";
 import { formatVND, formatNumberInput, parseNumberInput } from "@/lib/utils";
 import {
@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 function FormulaPage() {
-  const { data: settings, isLoading } = useSettingsQuery();
+  const { data: settings } = useSettingsQuery();
 
   // State cho trình giả lập (Simulator)
   const [jpyAmount, setJpyAmount] = useState("10.000");
@@ -80,7 +80,8 @@ function FormulaPage() {
   const domesticShipVnd = numDomestic * numRate;
   const vnShipCostVnd = numWeight * numShipVn;
   const serviceFeeVnd = (numJpy + numDomestic) * numRate * (numFeeRate / 100);
-  const totalInvestmentVnd = goodsCostVnd + domesticShipVnd + vnShipCostVnd + serviceFeeVnd;
+  const totalInvestmentVnd =
+    goodsCostVnd + domesticShipVnd + vnShipCostVnd + serviceFeeVnd;
 
   return (
     <div className="space-y-8 pb-12">
@@ -112,10 +113,12 @@ function FormulaPage() {
             </p>
             <div className="my-4 p-3.5 bg-white border border-blue-100 rounded-2xl space-y-1">
               <code className="text-xs font-bold text-blue-700 block text-center leading-relaxed">
-                Vốn Lô = (Hàng JPY + Ship Nhật JPY) * Tỷ giá + Ship VN + Phí Công mua (VND)
+                Vốn Lô = (Hàng JPY + Ship Nhật JPY) * Tỷ giá + Ship VN + Phí
+                Công mua (VND)
               </code>
               <code className="text-[10px] font-semibold text-indigo-600 block text-center leading-relaxed">
-                Trong đó: Phí Công mua = (Hàng JPY + Ship Nhật JPY) * Tỷ giá * % Công mua
+                Trong đó: Phí Công mua = (Hàng JPY + Ship Nhật JPY) * Tỷ giá * %
+                Công mua
               </code>
             </div>
             <ul className="text-xs text-gray-600 space-y-2 mt-2">
@@ -128,7 +131,8 @@ function FormulaPage() {
               <li className="flex items-start gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0"></span>
                 <span>
-                  <strong>Ship Nhật JPY:</strong> Phí vận chuyển nội địa tại Nhật.
+                  <strong>Ship Nhật JPY:</strong> Phí vận chuyển nội địa tại
+                  Nhật.
                 </span>
               </li>
               <li className="flex items-start gap-1.5">
@@ -140,19 +144,23 @@ function FormulaPage() {
               <li className="flex items-start gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0"></span>
                 <span>
-                  <strong>Ship VN:</strong> Tiền vận chuyển Nhật - Việt, tính bằng{" "}
+                  <strong>Ship VN:</strong> Tiền vận chuyển Nhật - Việt, tính
+                  bằng{" "}
                   <code className="bg-gray-100 px-1 py-0.5 rounded text-blue-600">
                     Cân nặng (kg) * Đơn giá/kg
-                  </code>.
+                  </code>
+                  .
                 </span>
               </li>
               <li className="flex items-start gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0"></span>
                 <span>
-                  <strong>Phí Công mua:</strong> Phí dịch vụ mua hàng, tính theo công thức:{" "}
+                  <strong>Phí Công mua:</strong> Phí dịch vụ mua hàng, tính theo
+                  công thức:{" "}
                   <code className="bg-gray-100 px-1 py-0.5 rounded text-blue-600">
                     (Tiền hàng + Ship Nhật) * Tỷ giá * % Công mua
-                  </code>.
+                  </code>
+                  .
                 </span>
               </li>
             </ul>
@@ -337,8 +345,7 @@ function FormulaPage() {
               {/* % Công mua */}
               <div className="space-y-1">
                 <label className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
-                  <Percent size={14} className="text-gray-400" />
-                  % Công mua
+                  <Percent size={14} className="text-gray-400" />% Công mua
                 </label>
                 <input
                   type="number"
@@ -392,10 +399,10 @@ function FormulaPage() {
                   Lưu ý về Cấu hình mặc định
                 </h5>
                 <p className="text-[11px] text-gray-500 leading-relaxed">
-                  Các thông số Tỷ giá Yên, Ship nội địa Nhật, Công mua và Ship về Việt Nam
-                  được tự động tải từ cài đặt hệ thống của bạn để mô phỏng chính
-                  xác nhất. Bạn có thể sửa đổi cấu hình mặc định này tại trang{" "}
-                  <strong>Cài đặt</strong>.
+                  Các thông số Tỷ giá Yên, Ship nội địa Nhật, Công mua và Ship
+                  về Việt Nam được tự động tải từ cài đặt hệ thống của bạn để mô
+                  phỏng chính xác nhất. Bạn có thể sửa đổi cấu hình mặc định này
+                  tại trang <strong>Cài đặt</strong>.
                 </p>
               </div>
             </div>

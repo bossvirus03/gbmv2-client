@@ -1,18 +1,20 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useExpensesQuery, useCreateExpenseMutation, useUpdateExpenseMutation, useDeleteExpenseMutation } from "@/hooks/useExpenses";
+import {
+  useExpensesQuery,
+  useCreateExpenseMutation,
+  useUpdateExpenseMutation,
+  useDeleteExpenseMutation,
+} from "@/hooks/useExpenses";
 import { Expense } from "@/services/expenseService";
 import { Plus, Edit2, Trash2, Search, Calendar, FileText } from "lucide-react";
 import { formatVND, formatNumberInput, parseNumberInput } from "@/lib/utils";
-
-
 
 type ExpenseFormField = {
   content: string;
   amount: string;
   date: string;
 };
-
 
 function ExpensePage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,7 +23,7 @@ function ExpensePage() {
 
   // React Query Custom Hooks
   const { data: expenses = [], isLoading } = useExpensesQuery();
-  
+
   const createMutation = useCreateExpenseMutation(() => {
     alert("✅ Thêm chi phí thành công!");
     closeModal();
@@ -37,7 +39,12 @@ function ExpensePage() {
   });
 
   // React Hook Form
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<ExpenseFormField>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<ExpenseFormField>();
 
   const openAddModal = () => {
     setEditingExpense(null);
@@ -72,20 +79,22 @@ function ExpensePage() {
       date: new Date(data.date).toISOString(),
     };
 
-
     if (editingExpense) {
-      updateMutation.mutate({ id: editingExpense.id, data: payload as any }, {
-        onError: (err: any) => {
-          console.error(err);
-          alert(err?.response?.data?.message || "❌ Lỗi khi cập nhật");
-        }
-      });
+      updateMutation.mutate(
+        { id: editingExpense.id, data: payload as any },
+        {
+          onError: (err: any) => {
+            console.error(err);
+            alert(err?.response?.data?.message || "❌ Lỗi khi cập nhật");
+          },
+        },
+      );
     } else {
       createMutation.mutate(payload as any, {
         onError: (err: any) => {
           console.error(err);
           alert(err?.response?.data?.message || "❌ Lỗi khi thêm chi phí");
-        }
+        },
       });
     }
   };
@@ -96,25 +105,30 @@ function ExpensePage() {
         onError: (err: any) => {
           console.error(err);
           alert("❌ Lỗi khi xóa chi phí");
-        }
+        },
       });
     }
   };
 
   // Filter expenses
   const filteredExpenses = expenses.filter((e) =>
-    e.content.toLowerCase().includes(searchTerm.toLowerCase())
+    e.content.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // Total expenses amount
-  const totalAmount = filteredExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
+  const totalAmount = filteredExpenses.reduce(
+    (sum, e) => sum + Number(e.amount),
+    0,
+  );
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Quản lý Chi phí</h1>
-          <p className="text-sm text-gray-500 mt-1">Danh sách chi phí vận hành và phát sinh của doanh nghiệp</p>
+          <p className="text-sm text-gray-500 mt-1">
+            Danh sách chi phí vận hành và phát sinh của doanh nghiệp
+          </p>
         </div>
         <button
           onClick={openAddModal}
@@ -128,10 +142,13 @@ function ExpensePage() {
       {/* Top Overview Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-gradient-to-r from-red-500 to-rose-600 text-white rounded-3xl p-6 shadow-md">
-          <p className="text-xs uppercase tracking-wider text-red-100 font-semibold">Tổng chi phí lọc được</p>
+          <p className="text-xs uppercase tracking-wider text-red-100 font-semibold">
+            Tổng chi phí lọc được
+          </p>
           <h3 className="text-3xl font-bold mt-2">{formatVND(totalAmount)}</h3>
-          <p className="text-xs text-red-100/80 mt-2">Dựa trên {filteredExpenses.length} khoản chi phí bên dưới</p>
-
+          <p className="text-xs text-red-100/80 mt-2">
+            Dựa trên {filteredExpenses.length} khoản chi phí bên dưới
+          </p>
         </div>
       </div>
 
@@ -149,7 +166,9 @@ function ExpensePage() {
 
       {/* Main List */}
       {isLoading ? (
-        <div className="text-center py-12 text-gray-500">Đang tải danh sách chi phí...</div>
+        <div className="text-center py-12 text-gray-500">
+          Đang tải danh sách chi phí...
+        </div>
       ) : filteredExpenses.length === 0 ? (
         <div className="bg-white rounded-3xl p-12 text-center text-gray-500 border border-gray-100 shadow-sm">
           💸 Chưa ghi nhận khoản chi phí nào phù hợp.
@@ -168,10 +187,15 @@ function ExpensePage() {
               </thead>
               <tbody className="divide-y divide-gray-100 text-sm">
                 {filteredExpenses.map((expense) => (
-                  <tr key={expense.id} className="hover:bg-gray-50/50 transition">
+                  <tr
+                    key={expense.id}
+                    className="hover:bg-gray-50/50 transition"
+                  >
                     <td className="px-6 py-4 font-medium text-gray-800 flex items-center gap-2">
                       <FileText size={16} className="text-gray-400 shrink-0" />
-                      <span className="truncate max-w-xs sm:max-w-md">{expense.content}</span>
+                      <span className="truncate max-w-xs sm:max-w-md">
+                        {expense.content}
+                      </span>
                     </td>
                     <td className="px-6 py-4 font-bold text-red-600">
                       {formatVND(expense.amount)}
@@ -225,10 +249,16 @@ function ExpensePage() {
                 <input
                   type="text"
                   placeholder="Ví dụ: Thanh toán tiền điện tháng 6"
-                  {...register("content", { required: "Vui lòng nhập nội dung chi" })}
+                  {...register("content", {
+                    required: "Vui lòng nhập nội dung chi",
+                  })}
                   className="w-full px-5 py-4 border border-gray-200 rounded-2xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-sm"
                 />
-                {errors.content && <p className="text-xs text-red-500 mt-1 ml-2">{errors.content.message}</p>}
+                {errors.content && (
+                  <p className="text-xs text-red-500 mt-1 ml-2">
+                    {errors.content.message}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -240,7 +270,9 @@ function ExpensePage() {
                   placeholder="Nhập số tiền chi"
                   {...register("amount", {
                     required: "Vui lòng nhập số tiền chi",
-                    validate: (val) => parseNumberInput(String(val)) > 0 || "Số tiền phải lớn hơn 0",
+                    validate: (val) =>
+                      parseNumberInput(String(val)) > 0 ||
+                      "Số tiền phải lớn hơn 0",
                     onChange: (e) => {
                       e.target.value = formatNumberInput(e.target.value);
                     },
@@ -248,7 +280,11 @@ function ExpensePage() {
                   className="w-full px-5 py-4 border border-gray-200 rounded-2xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-sm font-semibold text-gray-800"
                 />
 
-                {errors.amount && <p className="text-xs text-red-500 mt-1 ml-2">{errors.amount.message}</p>}
+                {errors.amount && (
+                  <p className="text-xs text-red-500 mt-1 ml-2">
+                    {errors.amount.message}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -260,7 +296,11 @@ function ExpensePage() {
                   {...register("date", { required: "Vui lòng nhập ngày chi" })}
                   className="w-full px-5 py-4 border border-gray-200 rounded-2xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-sm text-gray-800"
                 />
-                {errors.date && <p className="text-xs text-red-500 mt-1 ml-2">{errors.date.message}</p>}
+                {errors.date && (
+                  <p className="text-xs text-red-500 mt-1 ml-2">
+                    {errors.date.message}
+                  </p>
+                )}
               </div>
 
               <div className="flex gap-3 pt-4">
@@ -276,7 +316,11 @@ function ExpensePage() {
                   disabled={isSubmitting}
                   className="flex-1 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-2xl transition cursor-pointer text-sm"
                 >
-                  {isSubmitting ? "Đang xử lý..." : editingExpense ? "Lưu thay đổi" : "Tạo mới"}
+                  {isSubmitting
+                    ? "Đang xử lý..."
+                    : editingExpense
+                      ? "Lưu thay đổi"
+                      : "Tạo mới"}
                 </button>
               </div>
             </form>

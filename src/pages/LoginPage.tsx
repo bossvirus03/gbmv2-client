@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import apiService from "../services/api";
 
 declare const google: any;
@@ -26,7 +26,10 @@ const LoginPage = () => {
       }
     } catch (err: any) {
       console.error(err);
-      setError(err.response?.data?.message || "Xác thực Google thất bại. Vui lòng thử lại!");
+      setError(
+        err.response?.data?.message ||
+          "Xác thực Google thất bại. Vui lòng thử lại!",
+      );
     } finally {
       setLoading(false);
     }
@@ -40,29 +43,32 @@ const LoginPage = () => {
         return;
       }
 
-      if (typeof google !== "undefined" && document.getElementById("googleBtn")) {
+      if (
+        typeof google !== "undefined" &&
+        document.getElementById("googleBtn")
+      ) {
         google.accounts.id.initialize({
           client_id: clientId,
           callback: handleGoogleLogin,
         });
 
-        google.accounts.id.renderButton(
-          document.getElementById("googleBtn"),
-          {
-            theme: "filled_blue",
-            size: "large",
-            width: 320,
-            text: "signin_with",
-            shape: "pill",
-          }
-        );
+        google.accounts.id.renderButton(document.getElementById("googleBtn"), {
+          theme: "filled_blue",
+          size: "large",
+          width: 320,
+          text: "signin_with",
+          shape: "pill",
+        });
       }
     };
 
     initGoogle();
 
     const interval = setInterval(() => {
-      if (typeof google !== "undefined" && document.getElementById("googleBtn")) {
+      if (
+        typeof google !== "undefined" &&
+        document.getElementById("googleBtn")
+      ) {
         initGoogle();
         clearInterval(interval);
       }
@@ -85,7 +91,6 @@ const LoginPage = () => {
         <div className="absolute inset-0 bg-blue-500/5 rounded-[32px] blur-2xl pointer-events-none"></div>
 
         <div className="bg-[#0e1227]/40 backdrop-blur-2xl border border-white/10 rounded-[32px] shadow-[0_24px_80px_-12px_rgba(0,0,0,0.5)] overflow-hidden transition-all duration-300">
-          
           {/* Header */}
           <div className="p-8 pb-4 text-center">
             {/* Logo */}
@@ -93,7 +98,9 @@ const LoginPage = () => {
               <div className="absolute inset-0 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-2xl rotate-6 opacity-30 blur-[4px]"></div>
               <div className="absolute inset-0 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-2xl rotate-12 opacity-20"></div>
               <div className="relative w-16 h-16 bg-[#0f142e] border border-white/10 rounded-2xl flex items-center justify-center shadow-lg">
-                <span className="bg-gradient-to-tr from-blue-400 via-indigo-300 to-white bg-clip-text text-transparent text-2xl font-black tracking-tight">GBM</span>
+                <span className="bg-gradient-to-tr from-blue-400 via-indigo-300 to-white bg-clip-text text-transparent text-2xl font-black tracking-tight">
+                  GBM
+                </span>
               </div>
             </div>
 
@@ -115,16 +122,26 @@ const LoginPage = () => {
 
             <div className="flex flex-col items-center justify-center py-6 w-full bg-white/5 border border-white/5 rounded-2xl shadow-inner min-h-[120px]">
               {/* Spinner: hiển thị khi loading */}
-              <div className={`flex flex-col items-center gap-3 ${loading ? "" : "hidden"}`}>
+              <div
+                className={`flex flex-col items-center gap-3 ${loading ? "" : "hidden"}`}
+              >
                 <div className="w-10 h-10 border-[3px] border-blue-500 border-t-transparent animate-spin rounded-full"></div>
-                <span className="text-slate-400 text-xs font-semibold tracking-wide uppercase">Đang xác thực...</span>
+                <span className="text-slate-400 text-xs font-semibold tracking-wide uppercase">
+                  Đang xác thực...
+                </span>
               </div>
 
               {/* Google Button: luôn ở trong DOM, ẩn khi loading */}
-              <div className={`w-full flex flex-col items-center gap-4 px-6 ${loading ? "hidden" : ""}`}>
-                <div id="googleBtn" className="w-full flex justify-center hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"></div>
+              <div
+                className={`w-full flex flex-col items-center gap-4 px-6 ${loading ? "hidden" : ""}`}
+              >
+                <div
+                  id="googleBtn"
+                  className="w-full flex justify-center hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+                ></div>
                 <p className="text-[11px] text-slate-500 text-center leading-normal">
-                  Sử dụng tài khoản Gmail công việc đã được cấp quyền quản trị viên.
+                  Sử dụng tài khoản Gmail công việc đã được cấp quyền quản trị
+                  viên.
                 </p>
               </div>
             </div>
@@ -141,6 +158,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
-
-

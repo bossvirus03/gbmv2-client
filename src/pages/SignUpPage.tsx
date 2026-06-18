@@ -1,57 +1,47 @@
-import React, { useState } from 'react';
-import apiService from '../services/api';
+import React, { useState } from "react";
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
-  
-  const [error, setError] = useState('');
+
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    setError('');
+
+    setError("");
 
     // Kiểm tra password khớp
     if (formData.password !== formData.confirmPassword) {
-      setError('Mật khẩu xác nhận không khớp');
+      setError("Mật khẩu xác nhận không khớp");
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await apiService.post('/auth/signup', {
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-      });
-
-      const data = response.data;
-
-      alert('Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.');
+      alert("Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
       // Chuyển sang trang login
-      window.location.href = '/login';
-      
+      window.location.href = "/login";
     } catch (err: any) {
       console.error(err);
-      
+
       if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else if (err.response?.status === 409) {
-        setError('Tên đăng nhập hoặc email đã tồn tại');
+        setError("Tên đăng nhập hoặc email đã tồn tại");
       } else {
-        setError('Đăng ký thất bại. Vui lòng thử lại!');
+        setError("Đăng ký thất bại. Vui lòng thử lại!");
       }
     } finally {
       setLoading(false);
@@ -155,7 +145,7 @@ const SignUpPage = () => {
                     Đang tạo tài khoản...
                   </span>
                 ) : (
-                  'Đăng ký'
+                  "Đăng ký"
                 )}
               </button>
             </form>
@@ -163,8 +153,11 @@ const SignUpPage = () => {
             {/* Link to Login */}
             <div className="text-center mt-6">
               <p className="text-gray-600">
-                Đã có tài khoản?{' '}
-                <a href="/login" className="text-blue-600 font-medium hover:underline">
+                Đã có tài khoản?{" "}
+                <a
+                  href="/login"
+                  className="text-blue-600 font-medium hover:underline"
+                >
                   Đăng nhập
                 </a>
               </p>

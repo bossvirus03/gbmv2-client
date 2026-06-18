@@ -1,8 +1,20 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getBatches, updateBatch, createBatch, addProductToBatch, addProductsWithImagesUpload, deleteProduct, Batch } from "@/services/batchService";
-import { getCustomers, createCustomer, updateCustomer } from "@/services/customerService";
-import { createOrder, updateOrder, createSellOrder } from "@/services/orderService";
-import { createOrderItem, getOrderItems, updateOrderItem, OrderItem } from "@/services/orderItemService";
+import {
+  getBatches,
+  updateBatch,
+  createBatch,
+  addProductToBatch,
+  addProductsWithImagesUpload,
+  deleteProduct,
+  Batch,
+} from "@/services/batchService";
+import { updateCustomer } from "@/services/customerService";
+import { updateOrder, createSellOrder } from "@/services/orderService";
+import {
+  getOrderItems,
+  updateOrderItem,
+  OrderItem,
+} from "@/services/orderItemService";
 import { updateProduct } from "@/services/productService";
 
 export const useBatchesQuery = () => {
@@ -19,10 +31,18 @@ export const useOrderItemsQuery = () => {
   });
 };
 
-export const useAddProductToBatchMutation = (onSuccessCallback?: () => void) => {
+export const useAddProductToBatchMutation = (
+  onSuccessCallback?: () => void,
+) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ batchId, imageUrl }: { batchId: number; imageUrl: string }) => addProductToBatch(batchId, { imageUrl }),
+    mutationFn: ({
+      batchId,
+      imageUrl,
+    }: {
+      batchId: number;
+      imageUrl: string;
+    }) => addProductToBatch(batchId, { imageUrl }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["batches"] });
       if (onSuccessCallback) onSuccessCallback();
@@ -30,17 +50,19 @@ export const useAddProductToBatchMutation = (onSuccessCallback?: () => void) => 
   });
 };
 
-export const useAddProductsWithImagesUploadMutation = (onSuccessCallback?: () => void) => {
+export const useAddProductsWithImagesUploadMutation = (
+  onSuccessCallback?: () => void,
+) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ 
-      batchId, 
-      files, 
-      onUploadProgress 
-    }: { 
-      batchId: number; 
-      files: File[]; 
-      onUploadProgress?: (progressEvent: any) => void 
+    mutationFn: ({
+      batchId,
+      files,
+      onUploadProgress,
+    }: {
+      batchId: number;
+      files: File[];
+      onUploadProgress?: (progressEvent: any) => void;
     }) => addProductsWithImagesUpload(batchId, files, onUploadProgress),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["batches"] });
@@ -63,7 +85,8 @@ export const useCreateBatchMutation = (onSuccessCallback?: () => void) => {
 export const useUpdateBatchMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<Batch> }) => updateBatch(id, data),
+    mutationFn: ({ id, data }: { id: number; data: Partial<Batch> }) =>
+      updateBatch(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["batches"] });
       if (onSuccessCallback) onSuccessCallback();
@@ -74,13 +97,22 @@ export const useUpdateBatchMutation = (onSuccessCallback?: () => void) => {
 export const useSellProductMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ productId, form }: { productId: number; form: any }) => {
+    mutationFn: async ({
+      productId,
+      form,
+    }: {
+      productId: number;
+      form: any;
+    }) => {
       await createSellOrder({
         customerName: form.customerName,
         customerPhone: form.customerPhone || undefined,
         productId,
         price: Number(form.price),
-        deposit: form.status === "SOLD" ? Number(form.price) : Number(form.deposit || 0),
+        deposit:
+          form.status === "SOLD"
+            ? Number(form.price)
+            : Number(form.deposit || 0),
         status: form.status,
         note: form.note || undefined,
       });
@@ -97,14 +129,14 @@ export const useSellProductMutation = (onSuccessCallback?: () => void) => {
 export const useUpdateSaleMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ 
-      productId, 
-      orderItemId, 
-      form 
-    }: { 
-      productId: number; 
-      orderItemId: number; 
-      form: any 
+    mutationFn: async ({
+      productId,
+      orderItemId,
+      form,
+    }: {
+      productId: number;
+      orderItemId: number;
+      form: any;
     }) => {
       // 1. Lấy thông tin chi tiết các order items
       const items = await getOrderItems();
@@ -134,7 +166,9 @@ export const useUpdateSaleMutation = (onSuccessCallback?: () => void) => {
       });
 
       // 5. Cập nhật trạng thái sản phẩm
-      const newStatus = form.status || (Number(form.deposit || 0) >= Number(form.price) ? "SOLD" : "DEPOSIT");
+      const newStatus =
+        form.status ||
+        (Number(form.deposit || 0) >= Number(form.price) ? "SOLD" : "DEPOSIT");
       await updateProduct(productId, {
         status: newStatus,
         price: Number(form.price),
@@ -152,8 +186,13 @@ export const useUpdateSaleMutation = (onSuccessCallback?: () => void) => {
 export const useDeleteProductMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ batchId, productId }: { batchId: number; productId: number }) =>
-      deleteProduct(batchId, productId),
+    mutationFn: ({
+      batchId,
+      productId,
+    }: {
+      batchId: number;
+      productId: number;
+    }) => deleteProduct(batchId, productId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["batches"] });
       if (onSuccessCallback) onSuccessCallback();

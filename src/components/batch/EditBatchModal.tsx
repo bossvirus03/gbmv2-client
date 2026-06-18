@@ -4,7 +4,6 @@ import { useUpdateBatchMutation } from "@/hooks/useBatches";
 import { formatNumberInput, parseNumberInput, formatVND } from "@/lib/utils";
 import { useToast } from "@/contexts/ToastContext";
 import { Batch } from "@/services/batchService";
-import { Coins, TrendingUp, Percent, Truck } from "lucide-react";
 
 interface EditBatchModalProps {
   isOpen: boolean;
@@ -89,7 +88,10 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({
           Sửa thông tin lô hàng
         </h2>
 
-        <form onSubmit={editForm.handleSubmit(onSubmitEdit)} className="space-y-5">
+        <form
+          onSubmit={editForm.handleSubmit(onSubmitEdit)}
+          className="space-y-5"
+        >
           <div>
             <label className="block text-sm font-semibold mb-1.5 text-gray-700">
               Tên lô hàng *
@@ -251,13 +253,11 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({
             <button
               type="submit"
               disabled={
-                editForm.formState.isSubmitting ||
-                updateBatchMutation.isPending
+                editForm.formState.isSubmitting || updateBatchMutation.isPending
               }
               className="flex-1 py-3 bg-blue-600 text-white rounded-2xl font-medium hover:bg-blue-700 disabled:bg-gray-400 cursor-pointer text-sm"
             >
-              {editForm.formState.isSubmitting ||
-              updateBatchMutation.isPending
+              {editForm.formState.isSubmitting || updateBatchMutation.isPending
                 ? "Đang lưu..."
                 : "Lưu thay đổi"}
             </button>

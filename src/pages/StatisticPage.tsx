@@ -1,11 +1,9 @@
-import React from "react";
 import { useBatchesQuery } from "@/hooks/useBatches";
 import { useCustomersQuery } from "@/hooks/useCustomers";
 import { useExpensesQuery } from "@/hooks/useExpenses";
 import { useOrderItemsQuery } from "@/hooks/useOrderItems";
 import { BarChart3, Users, PackageCheck } from "lucide-react";
 import { formatVND } from "@/lib/utils";
-
 
 function StatisticPage() {
   // Fetch using custom hooks
@@ -241,7 +239,6 @@ function StatisticPage() {
               </span>
             </div>
 
-
             {/* Investment Bar */}
             <div className="flex flex-col items-center w-full group">
               <span className="text-xs font-bold text-blue-600 mb-2 opacity-0 group-hover:opacity-100 transition duration-200">
@@ -256,7 +253,6 @@ function StatisticPage() {
               </span>
             </div>
 
-
             {/* Expenses Bar */}
             <div className="flex flex-col items-center w-full group">
               <span className="text-xs font-bold text-rose-600 mb-2 opacity-0 group-hover:opacity-100 transition duration-200">
@@ -270,7 +266,6 @@ function StatisticPage() {
                 Chi phí phụ
               </span>
             </div>
-
           </div>
         </div>
       </div>
