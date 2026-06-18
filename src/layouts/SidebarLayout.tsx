@@ -28,17 +28,37 @@ import { Sheet, SheetContent, SheetTrigger } from "../components/ui/sheet";
 import { Button } from "../components/ui/button";
 import { getAccessToken, clearAccessToken } from "../lib/asyncLocalstoragate";
 
-const menuItems = [
-  { name: "Trang chủ", path: "/", icon: Home },
-  { name: "Tạo đơn hàng", path: "/create-order", icon: PlusCircle },
-  { name: "Batch", path: "/batch", icon: Package },
-  { name: "Khách hàng", path: "/customer", icon: Users },
-  { name: "Người dùng", path: "/user", icon: UserCog },
-  { name: "Quỹ tiền", path: "/fund", icon: DollarSign },
-  { name: "Chi phí", path: "/expense", icon: Receipt },
-  { name: "Thống kê", path: "/statistic", icon: BarChart3 },
-  { name: "Cài đặt", path: "/settings", icon: Settings },
-  { name: "Công thức tính", path: "/formulas", icon: Calculator },
+const menuGroups = [
+  {
+    title: "Tổng quan",
+    items: [
+      { name: "Trang chủ", path: "/", icon: Home },
+      { name: "Thống kê", path: "/statistic", icon: BarChart3 },
+    ],
+  },
+  {
+    title: "Giao dịch",
+    items: [
+      { name: "Tạo đơn hàng", path: "/create-order", icon: PlusCircle },
+      { name: "Quỹ tiền", path: "/fund", icon: DollarSign },
+      { name: "Chi phí", path: "/expense", icon: Receipt },
+    ],
+  },
+  {
+    title: "Quản lý",
+    items: [
+      { name: "Lô hàng", path: "/batch", icon: Package },
+      { name: "Khách hàng", path: "/customer", icon: Users },
+      { name: "Người dùng", path: "/user", icon: UserCog },
+    ],
+  },
+  {
+    title: "Hệ thống",
+    items: [
+      { name: "Công thức tính", path: "/formulas", icon: Calculator },
+      { name: "Cài đặt", path: "/settings", icon: Settings },
+    ],
+  },
 ];
 
 const SidebarLayout = () => {
@@ -91,123 +111,223 @@ const SidebarLayout = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 border-r-0">
+    <div className="flex h-screen bg-slate-50/50">
       {/* Sidebar Desktop */}
-      <div className="hidden lg:flex w-72 flex-col bg-white shadow-md">
-        <div className="p-6 flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow">
-            M
+      <div className="hidden lg:flex w-64 flex-col bg-[#0b0f19] border-r border-slate-900/60 shadow-[4px_0_24px_rgba(0,0,0,0.15)] z-20">
+        {/* Brand Header */}
+        <div className="h-16 px-6 flex items-center justify-between border-b border-slate-900/60 bg-[#0b0f19]">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-[0_0_15px_rgba(99,102,241,0.4)] transition-all duration-300 hover:scale-105 hover:rotate-3 cursor-pointer">
+              M
+            </div>
+            <div className="flex flex-col">
+              <h1 className="text-sm font-black text-slate-100 tracking-wider leading-none">GBM</h1>
+              <div className="flex items-center gap-1 mt-1">
+                <span className="text-[8px] text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wider">v2.0</span>
+              </div>
+            </div>
           </div>
-          <h1 className="text-xl font-semibold text-gray-800">GBM</h1>
         </div>
 
-        <nav className="flex-1 p-4 overflow-y-auto">
-          <ul className="space-y-2">
-            {menuItems.map((item) => (
-              <li key={item.path}>
-                <NavLink
-                  to={item.path}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-200
-                 ${
-                   isActive
-                     ? "bg-blue-600 text-white shadow-sm"
-                     : "text-gray-600 hover:bg-gray-100/70 hover:text-gray-900"
-                 }`
-                  }
-                >
-                  <item.icon size={20} />
-                  <span>{item.name}</span>
-                </NavLink>
-              </li>
-            ))}
-          </ul>
+        {/* Menu Navigation */}
+        <nav className="flex-1 px-4 py-6 overflow-y-auto space-y-6">
+          {menuGroups.map((group) => (
+            <div key={group.title} className="space-y-1.5">
+              <h3 className="px-3 text-[10px] font-bold text-slate-500/80 uppercase tracking-widest mb-2">
+                {group.title}
+              </h3>
+              <ul className="space-y-1">
+                {group.items.map((item) => (
+                  <li key={item.path}>
+                    <NavLink
+                      to={item.path}
+                      className={({ isActive }) =>
+                        `flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold border transition-all duration-300 ease-in-out group transform
+                        ${
+                          isActive
+                            ? "bg-gradient-to-r from-indigo-600/90 to-purple-600/90 text-white border-indigo-500/30 shadow-[0_4px_12px_rgba(99,102,241,0.25)] translate-x-1"
+                            : "text-slate-400 hover:bg-slate-800/40 hover:text-slate-100 border-transparent hover:translate-x-1"
+                        }`
+                      }
+                    >
+                      {({ isActive }) => (
+                        <>
+                          <item.icon
+                            size={16}
+                            className={`transition-colors duration-300 ${
+                              isActive
+                                ? "text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.6)]"
+                                : "text-slate-500 group-hover:text-indigo-400"
+                            }`}
+                          />
+                          <span>{item.name}</span>
+                        </>
+                      )}
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </nav>
+
+        {/* User Profile Footer */}
+        <div className="p-4 border-t border-slate-900/60 bg-[#0b0f19]">
+          <div className="flex items-center justify-between p-2.5 rounded-2xl bg-slate-900/50 border border-slate-800/40 shadow-lg backdrop-blur-md">
+            <div className="flex items-center gap-2.5 truncate">
+              <Avatar className="h-8 w-8 ring-1 ring-indigo-500/30">
+                {avatarUrl && <AvatarImage src={avatarUrl} alt={username} />}
+                <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-[10px]">
+                  {getInitials(username)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="truncate">
+                <p className="font-semibold text-xs text-slate-200 truncate leading-tight">
+                  {username}
+                </p>
+                <p className="text-[9px] text-slate-400 font-semibold mt-0.5 uppercase tracking-wider">
+                  Quản trị viên
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleLogoutClick}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 active:scale-95 transition-all duration-200"
+              title="Đăng xuất"
+            >
+              <LogOut size={14} />
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-screen">
-        {/* Navbar */}
-        <header className="h-16 bg-white/80 backdrop-blur-md px-4 lg:px-6 flex items-center justify-between shadow-sm">
-          {/* Mobile Button */}
+        {/* Navbar Header */}
+        <header className="h-16 bg-white/80 backdrop-blur-md px-4 lg:px-6 flex items-center justify-between border-b border-slate-100 z-10">
+          {/* Mobile Menu Button */}
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden">
-                <Menu size={22} />
+              <Button variant="ghost" size="icon" className="lg:hidden text-gray-600 hover:bg-gray-100/80">
+                <Menu size={20} />
               </Button>
             </SheetTrigger>
 
             <SheetContent
               side="left"
-              className="w-72 p-0 bg-white border-none "
+              className="w-64 p-0 bg-[#0b0f19] border-r border-slate-900/60 flex flex-col h-full text-slate-200"
             >
-              <div className="p-6 flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow">
-                  M
+              {/* Brand Header Mobile */}
+              <div className="h-16 p-4 flex items-center justify-between border-b border-slate-900/60 bg-[#0b0f19]">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-[0_0_15px_rgba(99,102,241,0.4)]">
+                    M
+                  </div>
+                  <div className="flex flex-col">
+                    <h1 className="text-sm font-black text-slate-100 tracking-wider leading-none">GBM</h1>
+                    <div className="flex items-center gap-1 mt-1">
+                      <span className="text-[8px] text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wider">v2.0</span>
+                    </div>
+                  </div>
                 </div>
-                <h1 className="text-xl font-semibold text-gray-800">GBM</h1>
               </div>
 
-              <nav className="p-4">
-                <ul className="space-y-2">
-                  {menuItems.map((item) => (
-                    <li key={item.path}>
-                      <NavLink
-                        to={item.path}
-                        className={({ isActive }) =>
-                          `flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all
-                       ${
-                         isActive
-                           ? "bg-blue-600 text-white shadow-sm"
-                           : "hover:bg-gray-100/70"
-                       }`
-                        }
-                      >
-                        <item.icon size={20} />
-                        <span>{item.name}</span>
-                      </NavLink>
-                    </li>
-                  ))}
-                </ul>
+              {/* Navigation Mobile */}
+              <nav className="flex-1 px-4 py-6 overflow-y-auto space-y-6">
+                {menuGroups.map((group) => (
+                  <div key={group.title} className="space-y-1.5">
+                    <h3 className="px-3 text-[10px] font-bold text-slate-500/80 uppercase tracking-widest mb-2">
+                      {group.title}
+                    </h3>
+                    <ul className="space-y-1">
+                      {group.items.map((item) => (
+                        <li key={item.path}>
+                          <NavLink
+                            to={item.path}
+                            className={({ isActive }) =>
+                              `flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold border transition-all duration-300 ease-in-out group transform
+                              ${
+                                isActive
+                                  ? "bg-gradient-to-r from-indigo-600/90 to-purple-600/90 text-white border-indigo-500/30 shadow-[0_4px_12px_rgba(99,102,241,0.25)] translate-x-1"
+                                  : "text-slate-400 hover:bg-slate-800/40 hover:text-slate-100 border-transparent hover:translate-x-1"
+                              }`
+                            }
+                          >
+                            {({ isActive }) => (
+                              <>
+                                <item.icon
+                                  size={16}
+                                  className={`transition-colors duration-300 ${
+                                    isActive
+                                      ? "text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.6)]"
+                                      : "text-slate-500 group-hover:text-indigo-400"
+                                  }`}
+                                />
+                                <span>{item.name}</span>
+                              </>
+                            )}
+                          </NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </nav>
+
+              {/* User Profile Mobile */}
+              <div className="p-4 border-t border-slate-900/60 bg-[#0b0f19]">
+                <div className="flex items-center justify-between p-2.5 rounded-2xl bg-slate-900/50 border border-slate-800/40 shadow-lg backdrop-blur-md">
+                  <div className="flex items-center gap-2.5 truncate">
+                    <Avatar className="h-8 w-8 ring-1 ring-indigo-500/30">
+                      {avatarUrl && <AvatarImage src={avatarUrl} alt={username} />}
+                      <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-[10px]">
+                        {getInitials(username)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="truncate">
+                      <p className="font-semibold text-xs text-slate-200 truncate leading-tight">
+                        {username}
+                      </p>
+                      <p className="text-[9px] text-slate-400 font-semibold mt-0.5 uppercase tracking-wider">
+                        Quản trị viên
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleLogoutClick}
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 active:scale-95 transition-all duration-200"
+                  >
+                    <LogOut size={14} />
+                  </button>
+                </div>
+              </div>
             </SheetContent>
           </Sheet>
 
-          {/* User */}
+          {/* User Quick Actions */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-3 p-1.5 px-3 rounded-2xl cursor-pointer hover:bg-gray-100/80 active:scale-[0.97] transition-all duration-200 focus:outline-none group text-left border border-transparent hover:border-gray-200/50">
-                <Avatar className="h-9 w-9 shadow-inner border border-gray-200/50">
+              <button className="flex items-center gap-2 p-1.5 px-2.5 rounded-xl cursor-pointer hover:bg-gray-100/80 active:scale-95 transition-all duration-200 focus:outline-none border border-transparent hover:border-gray-200/30">
+                <Avatar className="h-8 w-8 shadow-sm border border-gray-200/40">
                   {avatarUrl && <AvatarImage src={avatarUrl} alt={username} />}
-                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-semibold text-sm">
+                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-semibold text-xs">
                     {getInitials(username)}
                   </AvatarFallback>
                 </Avatar>
-                <div className="hidden sm:block">
-                  <p className="font-semibold text-sm text-gray-800 leading-tight">
-                    {username}
-                  </p>
-                  <p className="text-xs text-gray-500 font-medium">
-                    Quản trị viên
-                  </p>
-                </div>
-                <ChevronDown
-                  size={14}
-                  className="text-gray-400 group-data-[state=open]:rotate-180 transition-transform duration-200 hidden sm:block"
-                />
+                <ChevronDown size={12} className="text-gray-400" />
               </button>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
               align="end"
-              className="w-64 rounded-2xl shadow-xl border border-gray-100 bg-white/95 backdrop-blur-md p-1.5"
+              className="w-56 rounded-2xl shadow-xl border border-gray-100 bg-white/95 backdrop-blur-md p-1.5"
             >
-              <div className="px-3 py-2.5 mb-1.5 bg-gray-50/50 rounded-xl">
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <div className="px-2.5 py-2 mb-1.5 bg-gray-50/50 rounded-xl">
+                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                   Tài khoản
                 </p>
-                <div className="mt-1.5 flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-sm overflow-hidden">
+                <div className="mt-1 flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-xs overflow-hidden">
                     {avatarUrl ? (
                       <img
                         src={avatarUrl}
@@ -219,11 +339,8 @@ const SidebarLayout = () => {
                     )}
                   </div>
                   <div className="truncate">
-                    <p className="font-semibold text-sm text-gray-800 truncate">
+                    <p className="font-semibold text-xs text-gray-800 truncate">
                       {username}
-                    </p>
-                    <p className="text-[11px] text-gray-500 truncate">
-                      Hệ thống Quản lý
                     </p>
                   </div>
                 </div>
@@ -233,17 +350,17 @@ const SidebarLayout = () => {
 
               <DropdownMenuItem
                 onClick={() => navigate("/settings")}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:bg-gray-50 focus:text-gray-900 transition-colors cursor-pointer"
+                className="flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:bg-gray-50 focus:text-gray-900 transition-colors cursor-pointer"
               >
-                <Settings size={16} className="text-gray-400" />
+                <Settings size={14} className="text-gray-400" />
                 <span>Cài đặt</span>
               </DropdownMenuItem>
 
               <DropdownMenuItem
                 onClick={() => navigate("/formulas")}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:bg-gray-50 focus:text-gray-900 transition-colors cursor-pointer"
+                className="flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:bg-gray-50 focus:text-gray-900 transition-colors cursor-pointer"
               >
-                <Calculator size={16} className="text-gray-400" />
+                <Calculator size={14} className="text-gray-400" />
                 <span>Công thức tính</span>
               </DropdownMenuItem>
 
@@ -251,18 +368,18 @@ const SidebarLayout = () => {
 
               <DropdownMenuItem
                 onClick={handleLogoutClick}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 focus:bg-red-50 focus:text-red-700 transition-colors cursor-pointer"
+                className="flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs font-medium text-red-600 hover:bg-red-50 hover:text-red-700 focus:bg-red-50 focus:text-red-700 transition-colors cursor-pointer"
               >
-                <LogOut size={16} className="text-red-500" />
+                <LogOut size={14} className="text-red-500" />
                 <span>Đăng xuất</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
 
-        {/* Content */}
+        {/* Content Area */}
         <main className="flex-1 overflow-auto p-4 lg:p-6">
-          <div className="bg-white rounded-2xl shadow-sm p-4 min-h-full">
+          <div className="bg-white rounded-2xl shadow-sm p-4 min-h-full border border-gray-100">
             <Outlet />
           </div>
         </main>

@@ -4,10 +4,17 @@ import { useCustomersQuery } from "@/hooks/useCustomers";
 import { useExpensesQuery } from "@/hooks/useExpenses";
 import { useOrderItemsQuery } from "@/hooks/useOrderItems";
 import { getAccessToken } from "@/lib/asyncLocalstoragate";
-import { ArrowRight, Package, Users, DollarSign, BarChart3, Sparkles, PlusCircle } from "lucide-react";
+import {
+  ArrowRight,
+  Package,
+  Users,
+  DollarSign,
+  BarChart3,
+  Sparkles,
+  PlusCircle,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatVND } from "@/lib/utils";
-
 
 function HomePage() {
   const [username, setUsername] = useState("Nguyễn Văn A");
@@ -20,10 +27,11 @@ function HomePage() {
         const base64Url = token.split(".")[1];
         const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
         const jsonPayload = decodeURIComponent(
-          window.atob(base64)
+          window
+            .atob(base64)
             .split("")
             .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-            .join("")
+            .join(""),
         );
         const payload = JSON.parse(jsonPayload);
         if (payload && payload.username) {
@@ -50,7 +58,10 @@ function HomePage() {
   });
 
   // Calculate finance balance
-  const totalExpenses = expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+  const totalExpenses = expenses.reduce(
+    (sum, e) => sum + Number(e.amount || 0),
+    0,
+  );
   const totalInvestment = batches.reduce((sum, batch) => {
     const jpy = Number(batch.jpyAmount || 0);
     const rate = Number(batch.exchangeRate || 0);
@@ -58,7 +69,7 @@ function HomePage() {
     const shippingVn = Number(batch.shippingToVn || 0);
     const serviceFeeRate = Number(batch.serviceFeeRate || 0);
     const serviceFee = (jpy + domesticShip) * rate * (serviceFeeRate / 100);
-    return sum + (jpy * rate) + (domesticShip * rate) + shippingVn + serviceFee;
+    return sum + jpy * rate + domesticShip * rate + shippingVn + serviceFee;
   }, 0);
   const totalRevenue = orderItems.reduce((sum, item: any) => {
     const status = item.order?.status;
@@ -81,9 +92,12 @@ function HomePage() {
           <span className="bg-white/20 text-xs font-semibold px-3 py-1.5 rounded-full uppercase tracking-wider backdrop-blur-md">
             Hệ thống quản lý GBM
           </span>
-          <h2 className="text-3xl font-extrabold mt-4">Chào mừng trở lại, {username}!</h2>
+          <h2 className="text-3xl font-extrabold mt-4">
+            Chào mừng trở lại, {username}!
+          </h2>
           <p className="text-blue-100/90 mt-2 text-sm leading-relaxed">
-            Hôm nay là một ngày tuyệt vời để theo dõi hiệu suất bán hàng của bạn. Dữ liệu bên dưới đã được cập nhật trực tuyến từ máy chủ.
+            Hôm nay là một ngày tuyệt vời để theo dõi hiệu suất bán hàng của
+            bạn. Dữ liệu bên dưới đã được cập nhật trực tuyến từ máy chủ.
           </p>
         </div>
       </div>
@@ -93,8 +107,12 @@ function HomePage() {
         {/* Metric 1 */}
         <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex items-center justify-between">
           <div className="space-y-1">
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Tổng Lô hàng</p>
-            <h3 className="text-2xl font-bold text-gray-800">{batches.length} Lô</h3>
+            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
+              Tổng Lô hàng
+            </p>
+            <h3 className="text-2xl font-bold text-gray-800">
+              {batches.length} Lô
+            </h3>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
             <Package size={24} />
@@ -104,8 +122,12 @@ function HomePage() {
         {/* Metric 2 */}
         <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex items-center justify-between">
           <div className="space-y-1">
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Tổng Khách hàng</p>
-            <h3 className="text-2xl font-bold text-gray-800">{customers.length} Người</h3>
+            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
+              Tổng Khách hàng
+            </p>
+            <h3 className="text-2xl font-bold text-gray-800">
+              {customers.length} Người
+            </h3>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
             <Users size={24} />
@@ -115,8 +137,12 @@ function HomePage() {
         {/* Metric 3 */}
         <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex items-center justify-between">
           <div className="space-y-1">
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Doanh thu thu về</p>
-            <h3 className="text-2xl font-bold text-green-600">+{formatVND(totalRevenue)}</h3>
+            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
+              Doanh thu thu về
+            </p>
+            <h3 className="text-2xl font-bold text-green-600">
+              +{formatVND(totalRevenue)}
+            </h3>
           </div>
 
           <div className="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center">
@@ -127,13 +153,18 @@ function HomePage() {
         {/* Metric 4 */}
         <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex items-center justify-between">
           <div className="space-y-1">
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Số dư Quỹ hiện tại</p>
-            <h3 className={`text-2xl font-bold ${fundBalance >= 0 ? "text-green-600" : "text-red-600"}`}>
+            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
+              Số dư Quỹ hiện tại
+            </p>
+            <h3
+              className={`text-2xl font-bold ${fundBalance >= 0 ? "text-green-600" : "text-red-600"}`}
+            >
               {formatVND(fundBalance)}
             </h3>
-
           </div>
-          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${fundBalance >= 0 ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"}`}>
+          <div
+            className={`w-12 h-12 rounded-2xl flex items-center justify-center ${fundBalance >= 0 ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"}`}
+          >
             <BarChart3 size={24} />
           </div>
         </div>
@@ -141,7 +172,9 @@ function HomePage() {
 
       {/* Quick shortcuts */}
       <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm">
-        <h3 className="text-lg font-bold text-gray-800 mb-4">Lối tắt thao tác nhanh</h3>
+        <h3 className="text-lg font-bold text-gray-800 mb-4">
+          Lối tắt thao tác nhanh
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <Link
             to="/create-order"
@@ -151,9 +184,14 @@ function HomePage() {
               <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
                 <PlusCircle size={20} />
               </div>
-              <span className="font-semibold text-gray-700 text-sm">Tạo đơn hàng mới</span>
+              <span className="font-semibold text-gray-700 text-sm">
+                Tạo đơn hàng mới
+              </span>
             </div>
-            <ArrowRight size={18} className="text-gray-400 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight
+              size={18}
+              className="text-gray-400 group-hover:translate-x-1 transition-transform"
+            />
           </Link>
 
           <Link
@@ -164,9 +202,14 @@ function HomePage() {
               <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
                 <Package size={20} />
               </div>
-              <span className="font-semibold text-gray-700 text-sm">Xem Lô hàng & Bán</span>
+              <span className="font-semibold text-gray-700 text-sm">
+                Danh sách lô hàng
+              </span>
             </div>
-            <ArrowRight size={18} className="text-gray-400 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight
+              size={18}
+              className="text-gray-400 group-hover:translate-x-1 transition-transform"
+            />
           </Link>
 
           <Link
@@ -177,9 +220,14 @@ function HomePage() {
               <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
                 <Users size={20} />
               </div>
-              <span className="font-semibold text-gray-700 text-sm">Quản lý Khách hàng</span>
+              <span className="font-semibold text-gray-700 text-sm">
+                Quản lý Khách hàng
+              </span>
             </div>
-            <ArrowRight size={18} className="text-gray-400 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight
+              size={18}
+              className="text-gray-400 group-hover:translate-x-1 transition-transform"
+            />
           </Link>
 
           <Link
@@ -190,9 +238,14 @@ function HomePage() {
               <div className="w-10 h-10 rounded-xl bg-green-50 text-green-600 flex items-center justify-center">
                 <DollarSign size={20} />
               </div>
-              <span className="font-semibold text-gray-700 text-sm">Sổ quỹ tài chính</span>
+              <span className="font-semibold text-gray-700 text-sm">
+                Sổ quỹ tài chính
+              </span>
             </div>
-            <ArrowRight size={18} className="text-gray-400 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight
+              size={18}
+              className="text-gray-400 group-hover:translate-x-1 transition-transform"
+            />
           </Link>
         </div>
       </div>
