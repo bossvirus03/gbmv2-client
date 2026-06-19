@@ -6,10 +6,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatVND(value: number | string | null | undefined): string {
-  if (value === null || value === undefined) return "0đ";
-  const num = typeof value === "string" ? parseFloat(value) : Number(value);
-  if (isNaN(num)) return "0đ";
-  return num.toLocaleString("vi-VN") + "đ";
+  if (value === null || value === undefined) return "0 đ";
+  const num = typeof value === "string" ? parseNumberInput(value) : Number(value);
+  if (isNaN(num)) return "0 đ";
+  return Math.round(num).toLocaleString("vi-VN") + " đ";
 }
 
 export function formatNumberInput(value: string | number | null | undefined): string {

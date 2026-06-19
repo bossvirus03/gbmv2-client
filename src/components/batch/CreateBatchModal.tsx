@@ -55,7 +55,7 @@ export const CreateBatchModal: React.FC<CreateBatchModalProps> = ({
       });
       setTempWeight("");
     }
-  }, [isOpen, settings]);
+  }, [isOpen]);
 
   // Autofill khi settings tải xong
   useEffect(() => {

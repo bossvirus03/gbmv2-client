@@ -97,10 +97,8 @@ const LoginPage = () => {
             <div className="relative mx-auto w-20 h-20 mb-6 flex items-center justify-center">
               <div className="absolute inset-0 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-2xl rotate-6 opacity-30 blur-[4px]"></div>
               <div className="absolute inset-0 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-2xl rotate-12 opacity-20"></div>
-              <div className="relative w-16 h-16 bg-[#0f142e] border border-white/10 rounded-2xl flex items-center justify-center shadow-lg">
-                <span className="bg-gradient-to-tr from-blue-400 via-indigo-300 to-white bg-clip-text text-transparent text-2xl font-black tracking-tight">
-                  GBM
-                </span>
+              <div className="relative w-16 h-16 bg-[#0f142e] border border-white/10 rounded-2xl flex items-center justify-center p-2.5 shadow-lg">
+                <img src="/logo.svg" alt="LM Logo" className="w-full h-full object-contain" />
               </div>
             </div>
 
@@ -108,7 +106,7 @@ const LoginPage = () => {
               Chào Mừng
             </h1>
             <p className="text-slate-400 text-sm mt-2 font-medium">
-              Hệ thống Quản lý GBM - Đăng nhập để tiếp tục
+              Hệ thống Quản lý LM Dashboard - Đăng nhập để tiếp tục
             </p>
           </div>
 
@@ -150,7 +148,7 @@ const LoginPage = () => {
 
         {/* Footer */}
         <p className="text-center text-slate-600 text-xs mt-8 font-semibold tracking-wide">
-          © 2026 GLOBAL BUSINESS MANAGER. ALL RIGHTS RESERVED.
+          © 2026 LM DASHBOARD. ALL RIGHTS RESERVED.
         </p>
       </div>
     </div>

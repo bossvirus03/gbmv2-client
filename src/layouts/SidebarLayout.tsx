@@ -117,11 +117,11 @@ const SidebarLayout = () => {
         {/* Brand Header */}
         <div className="h-16 px-6 flex items-center justify-between border-b border-slate-900/60 bg-[#0b0f19]">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-[0_0_15px_rgba(99,102,241,0.4)] transition-all duration-300 hover:scale-105 hover:rotate-3 cursor-pointer">
-              M
+            <div className="w-9 h-9 bg-[#0f142e] border border-slate-800 rounded-xl flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(99,102,241,0.2)] transition-all duration-300 hover:scale-105 hover:rotate-3 cursor-pointer">
+              <img src="/logo.svg" alt="LM Logo" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-sm font-black text-slate-100 tracking-wider leading-none">GBM</h1>
+              <h1 className="text-sm font-black text-slate-100 tracking-wider leading-none">LM Dashboard</h1>
               <div className="flex items-center gap-1 mt-1">
                 <span className="text-[8px] text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wider">v2.0</span>
               </div>
@@ -220,11 +220,11 @@ const SidebarLayout = () => {
               {/* Brand Header Mobile */}
               <div className="h-16 p-4 flex items-center justify-between border-b border-slate-900/60 bg-[#0b0f19]">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-[0_0_15px_rgba(99,102,241,0.4)]">
-                    M
+                  <div className="w-9 h-9 bg-[#0f142e] border border-slate-800 rounded-xl flex items-center justify-center p-1.5 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
+                    <img src="/logo.svg" alt="LM Logo" className="w-full h-full object-contain" />
                   </div>
                   <div className="flex flex-col">
-                    <h1 className="text-sm font-black text-slate-100 tracking-wider leading-none">GBM</h1>
+                    <h1 className="text-sm font-black text-slate-100 tracking-wider leading-none">LM Dashboard</h1>
                     <div className="flex items-center gap-1 mt-1">
                       <span className="text-[8px] text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded-md font-bold uppercase tracking-wider">v2.0</span>
                     </div>

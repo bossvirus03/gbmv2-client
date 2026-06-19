@@ -73,7 +73,7 @@ function FormulaPage() {
   const numRate = parseNumberInput(exchangeRate);
   const numWeight = Number(weight) || 0;
   const numShipVn = parseNumberInput(shippingVnPerKg);
-  const numFeeRate = Number(serviceFeeRate) || 0;
+  const numFeeRate = Number(serviceFeeRate.replace(',', '.')) || 0;
 
   // Tính toán kết quả mô phỏng
   const goodsCostVnd = numJpy * numRate;
@@ -351,7 +351,7 @@ function FormulaPage() {
                   type="number"
                   step="0.1"
                   value={serviceFeeRate}
-                  onChange={(e) => setServiceFeeRate(e.target.value)}
+                  onChange={(e) => setServiceFeeRate(e.target.value.replace(',', '.'))}
                   placeholder="Nhập % công mua"
                   className="w-full border border-gray-200 rounded-2xl px-4 py-2.5 text-sm font-medium bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                 />
