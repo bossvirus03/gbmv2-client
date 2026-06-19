@@ -193,9 +193,9 @@ function FundPage() {
       </div>
 
       {/* Grid Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* Balance */}
-        <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex items-center justify-between">
+        <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm flex items-center justify-between gap-4">
           <div className="space-y-2">
             <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
               Số dư Quỹ hiện tại
@@ -222,14 +222,14 @@ function FundPage() {
             </p>
           </div>
           <div
-            className={`w-12 h-12 rounded-2xl flex items-center justify-center ${fundBalance >= 0 ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"}`}
+            className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${fundBalance >= 0 ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"}`}
           >
             <Wallet size={24} />
           </div>
         </div>
 
         {/* Revenue */}
-        <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex items-center justify-between">
+        <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm flex items-center justify-between gap-4">
           <div className="space-y-2">
             <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
               Tổng Thu thực tế (In)
@@ -242,13 +242,13 @@ function FundPage() {
               Từ cọc & thanh toán đơn hàng
             </p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center shrink-0">
             <TrendingUp size={24} />
           </div>
         </div>
 
         {/* Investment */}
-        <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex items-center justify-between">
+        <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm flex items-center justify-between gap-4">
           <div className="space-y-2">
             <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
               Tiền mua Lô hàng
@@ -261,13 +261,13 @@ function FundPage() {
               Giá trị các lô hàng nhập về
             </p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center shrink-0">
             <Landmark size={24} />
           </div>
         </div>
 
         {/* Expenses */}
-        <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex items-center justify-between">
+        <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm flex items-center justify-between gap-4">
           <div className="space-y-2">
             <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">
               Chi phí vận hành (Out)
@@ -280,14 +280,14 @@ function FundPage() {
               Các khoản chi phí vận hành khác
             </p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
             <TrendingDown size={24} />
           </div>
         </div>
       </div>
 
       {/* Transaction Log Ledger */}
-      <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm">
+      <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm">
         <h3 className="text-lg font-bold text-gray-800 mb-4">
           Nhật ký biến động quỹ (Sổ Món)
         </h3>
@@ -300,7 +300,7 @@ function FundPage() {
             return (
               <div
                 key={item.id}
-                className="flex items-center justify-between p-4 border border-gray-50 rounded-2xl hover:bg-gray-50/50 transition gap-4"
+                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-gray-50 rounded-2xl hover:bg-gray-50/50 transition gap-3"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div
@@ -328,7 +328,7 @@ function FundPage() {
                   </div>
                 </div>
 
-                <div className="text-right shrink-0">
+                <div className="text-left sm:text-right shrink-0 pl-13 sm:pl-0">
                   <span
                     className={`font-bold text-sm ${isRevenue ? "text-green-600" : "text-red-600"}`}
                   >
@@ -336,7 +336,7 @@ function FundPage() {
                     {formatVND(item.amount)}
                   </span>
 
-                  <p className="text-[10px] text-gray-400 flex items-center gap-1 justify-end mt-0.5">
+                  <p className="text-[10px] text-gray-400 flex items-center gap-1 sm:justify-end mt-0.5">
                     <Calendar size={10} />
                     {new Date(item.date).toLocaleDateString("vi-VN")}
                   </p>

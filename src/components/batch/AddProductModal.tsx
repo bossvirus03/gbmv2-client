@@ -4,6 +4,81 @@ import { useAddProductToBatchMutation, useAddProductsWithImagesUploadMutation } 
 import { useToast } from "@/contexts/ToastContext";
 import { Upload } from "lucide-react";
 
+const compressImageIfNeeded = (
+  file: File,
+  maxSizeBytes: number = 1 * 1024 * 1024,
+): Promise<File> => {
+  return new Promise((resolve) => {
+    // Nếu kích thước đã nhỏ hơn maxSizeBytes thì không cần nén
+    if (file.size <= maxSizeBytes) {
+      resolve(file);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height;
+
+        // Giới hạn kích thước tối đa 1600px để giữ chất lượng tốt
+        const MAX_WIDTH_HEIGHT = 1600;
+        if (width > MAX_WIDTH_HEIGHT || height > MAX_WIDTH_HEIGHT) {
+          if (width > height) {
+            height = Math.round((height * MAX_WIDTH_HEIGHT) / width);
+            width = MAX_WIDTH_HEIGHT;
+          } else {
+            width = Math.round((width * MAX_WIDTH_HEIGHT) / height);
+            height = MAX_WIDTH_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          resolve(file);
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        let quality = 0.85;
+        const compress = (q: number) => {
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                resolve(file);
+                return;
+              }
+              if (blob.size <= maxSizeBytes || q <= 0.2) {
+                const compressedFile = new File([blob], file.name, {
+                  type: file.type || "image/jpeg",
+                  lastModified: Date.now(),
+                });
+                resolve(compressedFile);
+              } else {
+                compress(q - 0.1);
+              }
+            },
+            file.type || "image/jpeg",
+            q,
+          );
+        };
+
+        compress(quality);
+      };
+      img.onerror = () => resolve(file);
+      img.src = event.target?.result as string;
+    };
+    reader.onerror = () => resolve(file);
+    reader.readAsDataURL(file);
+  });
+};
+
 interface AddProductModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -43,28 +118,48 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
     }
   }, [isOpen]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
       const newFiles = Array.from(files);
-      setSelectedFiles((prev) => [...prev, ...newFiles]);
 
-      const newPreviews: string[] = [];
-      let loadedCount = 0;
+      progress.show("Đang tối ưu dung lượng ảnh...", "generic");
+      progress.update(10);
 
-      newFiles.forEach((file) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          if (typeof reader.result === "string") {
-            newPreviews.push(reader.result);
-          }
-          loadedCount++;
-          if (loadedCount === newFiles.length) {
-            setImagePreviews((prev) => [...prev, ...newPreviews]);
-          }
-        };
-        reader.readAsDataURL(file);
-      });
+      try {
+        const compressedFiles = await Promise.all(
+          newFiles.map(async (file, idx) => {
+            const res = await compressImageIfNeeded(file);
+            const percent = 10 + Math.round(((idx + 1) / newFiles.length) * 80);
+            progress.update(percent);
+            return res;
+          })
+        );
+
+        setSelectedFiles((prev) => [...prev, ...compressedFiles]);
+
+        const newPreviews: string[] = [];
+        let loadedCount = 0;
+
+        compressedFiles.forEach((file) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            if (typeof reader.result === "string") {
+              newPreviews.push(reader.result);
+            }
+            loadedCount++;
+            if (loadedCount === compressedFiles.length) {
+              setImagePreviews((prev) => [...prev, ...newPreviews]);
+            }
+          };
+          reader.readAsDataURL(file);
+        });
+      } catch (err) {
+        console.error("Lỗi nén ảnh:", err);
+        toast.error("Có lỗi xảy ra trong quá trình tối ưu ảnh!");
+      } finally {
+        progress.hide();
+      }
     }
   };
 

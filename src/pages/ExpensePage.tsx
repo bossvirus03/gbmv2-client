@@ -170,65 +170,112 @@ function ExpensePage() {
           Đang tải danh sách chi phí...
         </div>
       ) : filteredExpenses.length === 0 ? (
-        <div className="bg-white rounded-3xl p-12 text-center text-gray-500 border border-gray-100 shadow-sm">
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-12 text-center text-gray-500 border border-gray-100 shadow-sm">
           💸 Chưa ghi nhận khoản chi phí nào phù hợp.
         </div>
       ) : (
-        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-gray-50 text-gray-400 text-[11px] font-bold uppercase tracking-wider border-b border-gray-100">
-                  <th className="px-6 py-4">Nội dung</th>
-                  <th className="px-6 py-4">Số tiền</th>
-                  <th className="px-6 py-4">Ngày chi</th>
-                  <th className="px-6 py-4 text-center">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 text-sm">
-                {filteredExpenses.map((expense) => (
-                  <tr
-                    key={expense.id}
-                    className="hover:bg-gray-50/50 transition"
-                  >
-                    <td className="px-6 py-4 font-medium text-gray-800 flex items-center gap-2">
-                      <FileText size={16} className="text-gray-400 shrink-0" />
-                      <span className="truncate max-w-xs sm:max-w-md">
-                        {expense.content}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 font-bold text-red-600">
-                      {formatVND(expense.amount)}
-                    </td>
+        <div className="space-y-4">
+          {/* Mobile view: list of cards */}
+          <div className="block md:hidden space-y-4">
+            {filteredExpenses.map((expense) => (
+              <div
+                key={expense.id}
+                className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3"
+              >
+                <div className="flex items-start gap-2 min-w-0">
+                  <FileText size={16} className="text-gray-400 shrink-0 mt-0.5" />
+                  <span className="font-medium text-gray-800 text-sm break-words">
+                    {expense.content}
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-red-600 text-sm">
+                    {formatVND(expense.amount)}
+                  </span>
+                  <span className="text-gray-500 flex items-center gap-1">
+                    <Calendar size={12} className="text-gray-400" />
+                    {new Date(expense.date).toLocaleDateString("vi-VN")}
+                  </span>
+                </div>
 
-                    <td className="px-6 py-4 text-gray-500">
-                      <span className="flex items-center gap-1.5">
-                        <Calendar size={14} className="text-gray-400" />
-                        {new Date(expense.date).toLocaleDateString("vi-VN")}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-center gap-2.5">
-                        <button
-                          onClick={() => openEditModal(expense)}
-                          className="flex items-center gap-1 px-3 py-1.5 border border-blue-100 text-blue-600 rounded-lg hover:bg-blue-50 transition cursor-pointer text-xs font-semibold"
-                        >
-                          <Edit2 size={12} />
-                          Sửa
-                        </button>
-                        <button
-                          onClick={() => handleDelete(expense.id)}
-                          className="flex items-center gap-1 px-3 py-1.5 border border-red-100 text-red-600 rounded-lg hover:bg-red-50 transition cursor-pointer text-xs font-semibold"
-                        >
-                          <Trash2 size={12} />
-                          Xóa
-                        </button>
-                      </div>
-                    </td>
+                <div className="flex gap-2 pt-2 border-t border-gray-50">
+                  <button
+                    onClick={() => openEditModal(expense)}
+                    className="flex-1 flex items-center justify-center gap-1 py-2 border border-blue-100 text-blue-600 rounded-xl transition cursor-pointer text-xs font-semibold"
+                  >
+                    <Edit2 size={12} />
+                    Sửa
+                  </button>
+                  <button
+                    onClick={() => handleDelete(expense.id)}
+                    className="flex-1 flex items-center justify-center gap-1 py-2 border border-red-100 text-red-600 rounded-xl transition cursor-pointer text-xs font-semibold"
+                  >
+                    <Trash2 size={12} />
+                    Xóa
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop view: table */}
+          <div className="hidden md:block bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-gray-50 text-gray-400 text-[11px] font-bold uppercase tracking-wider border-b border-gray-100">
+                    <th className="px-6 py-4">Nội dung</th>
+                    <th className="px-6 py-4">Số tiền</th>
+                    <th className="px-6 py-4">Ngày chi</th>
+                    <th className="px-6 py-4 text-center">Thao tác</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-100 text-sm">
+                  {filteredExpenses.map((expense) => (
+                    <tr
+                      key={expense.id}
+                      className="hover:bg-gray-50/50 transition"
+                    >
+                      <td className="px-6 py-4 font-medium text-gray-800 flex items-center gap-2">
+                        <FileText size={16} className="text-gray-400 shrink-0" />
+                        <span className="truncate max-w-xs sm:max-w-md">
+                          {expense.content}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 font-bold text-red-600">
+                        {formatVND(expense.amount)}
+                      </td>
+
+                      <td className="px-6 py-4 text-gray-500">
+                        <span className="flex items-center gap-1.5">
+                          <Calendar size={14} className="text-gray-400" />
+                          {new Date(expense.date).toLocaleDateString("vi-VN")}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-center gap-2.5">
+                          <button
+                            onClick={() => openEditModal(expense)}
+                            className="flex items-center gap-1 px-3 py-1.5 border border-blue-100 text-blue-600 rounded-lg hover:bg-blue-50 transition cursor-pointer text-xs font-semibold"
+                          >
+                            <Edit2 size={12} />
+                            Sửa
+                          </button>
+                          <button
+                            onClick={() => handleDelete(expense.id)}
+                            className="flex items-center gap-1 px-3 py-1.5 border border-red-100 text-red-600 rounded-lg hover:bg-red-50 transition cursor-pointer text-xs font-semibold"
+                          >
+                            <Trash2 size={12} />
+                            Xóa
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}

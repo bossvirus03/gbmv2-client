@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Outlet, NavLink, useNavigate, Navigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { Outlet, NavLink, useNavigate, Navigate, useLocation } from "react-router-dom";
 import {
   Home,
   Package,
@@ -63,8 +63,16 @@ const menuGroups = [
 
 const SidebarLayout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const mainRef = useRef<HTMLDivElement>(null);
   const [username, setUsername] = useState("Nguyễn Văn A");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.scrollTo(0, 0);
+    }
+  }, [location.pathname]);
 
   const token = getAccessToken();
   if (!token) {
@@ -378,7 +386,7 @@ const SidebarLayout = () => {
         </header>
 
         {/* Content Area */}
-        <main className="flex-1 overflow-auto p-4 lg:p-6">
+        <main ref={mainRef} className="flex-1 overflow-auto p-4 lg:p-6">
           <div className="bg-white rounded-2xl shadow-sm p-4 min-h-full border border-gray-100">
             <Outlet />
           </div>

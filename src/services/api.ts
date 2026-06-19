@@ -74,9 +74,11 @@ class ApiService {
 
   public upload<T = any>(url: string, formData: FormData, config?: AxiosRequestConfig) {
     return this.api.post<T>(url, formData, {
+      timeout: 60000, // Tăng timeout cho tác vụ upload lên 60 giây
       ...config,
       headers: {
         'Content-Type': 'multipart/form-data',
+        ...(config?.headers || {}),
       },
     });
   }
