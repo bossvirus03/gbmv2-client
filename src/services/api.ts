@@ -25,6 +25,12 @@ class ApiService {
           config.headers = config.headers ?? {};
           config.headers.Authorization = `Bearer ${token}`;
         }
+
+        // Nếu dữ liệu là FormData, xóa Content-Type để trình duyệt tự động sinh boundary
+        if (config.data instanceof FormData) {
+          delete config.headers['Content-Type'];
+        }
+
         return config;
       },
       (error) => Promise.reject(error)
@@ -76,10 +82,6 @@ class ApiService {
     return this.api.post<T>(url, formData, {
       timeout: 60000, // Tăng timeout cho tác vụ upload lên 60 giây
       ...config,
-      headers: {
-        'Content-Type': undefined,
-        ...(config?.headers || {}),
-      },
     });
   }
 }
