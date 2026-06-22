@@ -12,9 +12,6 @@ class ApiService {
     this.api = axios.create({
       baseURL: API_BASE_URL,
       timeout: 10000,
-      headers: {
-        'Content-Type': 'application/json',
-      },
     });
 
     this.api.interceptors.request.use(
