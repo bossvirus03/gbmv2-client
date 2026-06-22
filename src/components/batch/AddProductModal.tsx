@@ -198,7 +198,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
             progress.hide();
             console.error(err);
             toast.error(
-              "Không thể tải ảnh lên. Vui lòng kiểm tra lại cấu hình hoặc kết nối!",
+              "Không thể tải ảnh lên. Vui lòng kiểm tra lại cấu hình hoặc kết nối! \n"+err
             );
           },
         },
