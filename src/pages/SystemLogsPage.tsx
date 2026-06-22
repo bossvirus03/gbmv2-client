@@ -10,7 +10,6 @@ import {
   Info,
   Scroll,
   Wifi,
-  WifiOff,
   ChevronRight,
   ChevronDown,
   XCircle,
