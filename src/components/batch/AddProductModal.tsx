@@ -179,6 +179,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
 
       progress.show("Đang tải lên các sản phẩm mới", "upload");
 
+      let lastPercent = 0;
       addProductsWithImagesUploadMutation.mutate(
         {
           batchId,
@@ -187,7 +188,10 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
             const percentCompleted = Math.round(
               (progressEvent.loaded * 100) / (progressEvent.total || 1),
             );
-            progress.update(percentCompleted);
+            if (percentCompleted - lastPercent >= 5 || percentCompleted === 100) {
+              lastPercent = percentCompleted;
+              progress.update(percentCompleted);
+            }
           },
         },
         {
