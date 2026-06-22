@@ -77,7 +77,7 @@ class ApiService {
       timeout: 60000, // Tăng timeout cho tác vụ upload lên 60 giây
       ...config,
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': undefined,
         ...(config?.headers || {}),
       },
     });
