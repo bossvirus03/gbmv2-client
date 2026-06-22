@@ -28,7 +28,35 @@ export const CreateBatchModal: React.FC<CreateBatchModalProps> = ({
   const { toast } = useToast();
   const [tempWeight, setTempWeight] = useState("");
 
-  const createForm = useForm<EditBatchFields>();
+  const createForm = useForm<EditBatchFields>({
+    defaultValues: {
+      name: "",
+      jpyAmount: "",
+      exchangeRate: "",
+      domesticShipJpy: "",
+      shippingToVn: "",
+      serviceFeeRate: 0,
+      url: "",
+    }
+  });
+
+  // Real-time calculations for money preview
+  const jpyAmountVal = createForm.watch("jpyAmount") || "";
+  const exchangeRateVal = createForm.watch("exchangeRate") || "";
+  const domesticShipJpyVal = createForm.watch("domesticShipJpy") || "";
+  const shippingToVnVal = createForm.watch("shippingToVn") || "";
+  const serviceFeeRateVal = createForm.watch("serviceFeeRate") ?? 0;
+
+  const numJpy = parseNumberInput(jpyAmountVal);
+  const numRate = parseNumberInput(exchangeRateVal);
+  const numDomestic = parseNumberInput(domesticShipJpyVal);
+  const numShipVn = parseNumberInput(shippingToVnVal);
+  const numFeeRate = Number(serviceFeeRateVal) || 0;
+
+  const goodsCostVnd = numJpy * numRate;
+  const domesticShipVnd = numDomestic * numRate;
+  const serviceFeeVnd = (numJpy + numDomestic) * numRate * (numFeeRate / 100);
+  const totalInvestmentVnd = goodsCostVnd + domesticShipVnd + numShipVn + serviceFeeVnd;
 
   const createBatchMutation = useCreateBatchMutation(() => {
     toast.success("Tạo lô hàng mới thành công!");
@@ -82,8 +110,14 @@ export const CreateBatchModal: React.FC<CreateBatchModalProps> = ({
   }, [settings, isOpen, createForm]);
 
   const onSubmitCreate = (data: EditBatchFields) => {
+    const trimmedName = (data.name || "").trim();
+    if (!trimmedName) {
+      toast.error("Tên lô hàng không được để trống!");
+      return;
+    }
+
     const payload = {
-      name: data.name?.trim(),
+      name: trimmedName,
       jpyAmount: parseNumberInput(data.jpyAmount),
       exchangeRate: parseNumberInput(data.exchangeRate),
       domesticShipJpy: parseNumberInput(data.domesticShipJpy),
@@ -91,6 +125,8 @@ export const CreateBatchModal: React.FC<CreateBatchModalProps> = ({
       serviceFeeRate: Number(data.serviceFeeRate),
       url: data.url || undefined,
     } as any;
+
+    console.log("[CreateBatchModal] Sending create request payload:", payload);
 
     createBatchMutation.mutate(payload, {
       onError: (err: any) => {
@@ -124,7 +160,7 @@ export const CreateBatchModal: React.FC<CreateBatchModalProps> = ({
               placeholder="Nhập tên lô hàng"
               {...createForm.register("name", {
                 required: "Vui lòng nhập tên lô hàng",
-                validate: (value) => value.trim() !== "" || "Tên lô hàng không được để trống hoặc chỉ chứa khoảng trắng",
+                validate: (value) => (value || "").trim() !== "" || "Tên lô hàng không được để trống hoặc chỉ chứa khoảng trắng",
               })}
               className="w-full border border-gray-200 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             />
@@ -281,6 +317,35 @@ export const CreateBatchModal: React.FC<CreateBatchModalProps> = ({
               className="w-full border border-gray-200 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             />
           </div>
+
+          {/* Real-time investment preview */}
+          {(numJpy > 0 || numDomestic > 0 || numShipVn > 0) && (
+            <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-3">
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider text-center mb-1">
+                Xem trước chi phí đầu tư
+              </h3>
+              <div className="flex justify-between text-xs text-gray-600">
+                <span>Tiền hàng ({formatNumberInput(String(numJpy))} ¥)</span>
+                <span className="font-semibold">{formatVND(goodsCostVnd)}</span>
+              </div>
+              <div className="flex justify-between text-xs text-gray-600 border-t border-gray-100/50 pt-2">
+                <span>Ship nội địa Nhật ({formatNumberInput(String(numDomestic))} ¥)</span>
+                <span className="font-semibold">{formatVND(domesticShipVnd)}</span>
+              </div>
+              <div className="flex justify-between text-xs text-gray-600 border-t border-gray-100/50 pt-2">
+                <span>Phí dịch vụ ({numFeeRate}%)</span>
+                <span className="font-semibold text-indigo-600">{formatVND(serviceFeeVnd)}</span>
+              </div>
+              <div className="flex justify-between text-xs text-gray-600 border-t border-gray-100/50 pt-2">
+                <span>Ship Nhật - Việt</span>
+                <span className="font-semibold">{formatVND(numShipVn)}</span>
+              </div>
+              <div className="border-t border-dashed border-gray-200 pt-3 mt-1 flex flex-col items-center">
+                <span className="text-[10px] font-bold text-gray-400 tracking-wider">TỔNG VỐN LÔ HÀNG</span>
+                <span className="text-2xl font-black text-blue-600 mt-1">{formatVND(totalInvestmentVnd)}</span>
+              </div>
+            </div>
+          )}
 
           <div className="flex gap-3 pt-4">
             <button
