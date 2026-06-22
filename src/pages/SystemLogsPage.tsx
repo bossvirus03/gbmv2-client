@@ -47,7 +47,7 @@ const SystemLogsPage: React.FC = () => {
 
     setStatus("connecting");
     const token = getAccessToken();
-    const url = `${API_BASE_URL}/logs/stream?token=${encodeURIComponent(token || "")}`;
+    const url = `${API_BASE_URL}logs/stream?token=${encodeURIComponent(token || "")}`;
 
     const es = new EventSource(url);
     eventSourceRef.current = es;
