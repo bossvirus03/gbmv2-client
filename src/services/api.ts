@@ -27,8 +27,12 @@ class ApiService {
         }
 
         // Nếu dữ liệu là FormData, xóa Content-Type để trình duyệt tự động sinh boundary
-        if (config.data instanceof FormData) {
-          delete config.headers['Content-Type'];
+        if (config.data instanceof FormData && config.headers) {
+          if (typeof config.headers.delete === "function") {
+            config.headers.delete("Content-Type");
+          } else {
+            delete config.headers["Content-Type"];
+          }
         }
 
         return config;
