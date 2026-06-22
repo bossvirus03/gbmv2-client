@@ -14,6 +14,7 @@ import {
   ChevronDown,
   Calculator,
   PlusCircle,
+  Terminal,
 } from "lucide-react";
 
 import {
@@ -57,6 +58,7 @@ const menuGroups = [
     items: [
       { name: "Công thức tính", path: "/formulas", icon: Calculator },
       { name: "Cài đặt", path: "/settings", icon: Settings },
+      { name: "Logs hệ thống", path: "/system-logs", icon: Terminal },
     ],
   },
 ];

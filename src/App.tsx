@@ -14,6 +14,7 @@ import StatisticPage from "./pages/StatisticPage";
 import SettingsPage from "./pages/SettingsPage";
 import FormulaPage from "./pages/FormulaPage";
 import CreateOrderPage from "./pages/CreateOrderPage";
+import SystemLogsPage from "./pages/SystemLogsPage";
 
 function App() {
   const [token, setToken] = useState<string | null>(
@@ -49,6 +50,7 @@ function App() {
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/formulas" element={<FormulaPage />} />
         <Route path="/create-order" element={<CreateOrderPage />} />
+        <Route path="/system-logs" element={<SystemLogsPage />} />
       </Route>
 
       <Route

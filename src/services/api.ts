@@ -2,7 +2,7 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { clearAccessToken, getAccessToken } from '../lib/asyncLocalstoragate';
 
-const API_BASE_URL =
+export const API_BASE_URL =
   ((import.meta as any).env?.VITE_API_URL as string | undefined) || 'http://localhost:3000';
 
 class ApiService {
