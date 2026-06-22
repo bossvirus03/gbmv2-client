@@ -57,7 +57,7 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({
   const onSubmitEdit = (data: EditBatchFields) => {
     if (!batch) return;
     const payload = {
-      name: data.name,
+      name: data.name?.trim(),
       jpyAmount: parseNumberInput(data.jpyAmount),
       exchangeRate: parseNumberInput(data.exchangeRate),
       domesticShipJpy: parseNumberInput(data.domesticShipJpy),
@@ -100,6 +100,7 @@ export const EditBatchModal: React.FC<EditBatchModalProps> = ({
               type="text"
               {...editForm.register("name", {
                 required: "Vui lòng nhập tên lô hàng",
+                validate: (value) => value.trim() !== "" || "Tên lô hàng không được để trống hoặc chỉ chứa khoảng trắng",
               })}
               className="w-full border border-gray-200 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
             />
