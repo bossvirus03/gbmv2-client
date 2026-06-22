@@ -62,7 +62,7 @@ export const useAddProductsWithImagesUploadMutation = (
     }: {
       batchId: number;
       files: File[];
-      onUploadProgress?: (progressEvent: any) => void;
+      onUploadProgress?: (progressEvent: { loaded: number; total?: number }) => void;
     }) => addProductsWithImagesUpload(batchId, files, onUploadProgress),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["batches"] });

@@ -68,14 +68,44 @@ export const deleteProduct = async (batchId: string | number, productId: number)
 export const addProductsWithImagesUpload = async (
 	batchId: string | number, 
 	files: File[],
-	onUploadProgress?: (progressEvent: any) => void
+	onUploadProgress?: (progressEvent: { loaded: number; total?: number }) => void
 ) => {
-	const formData = new FormData();
-	files.forEach((file) => {
-		formData.append('files', file);
-	});
-	const response = await apiService.upload(`/batch/${batchId}/products/uploads`, formData, {
-		onUploadProgress
-	});
-	return response.data;
+	const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+	const uploadedBytes = new Array(files.length).fill(0);
+	const imageUrls: string[] = [];
+
+	const chunkSize = 3;
+	for (let i = 0; i < files.length; i += chunkSize) {
+		const chunk = files.slice(i, i + chunkSize);
+		await Promise.all(
+			chunk.map(async (file, index) => {
+				const fileIndex = i + index;
+				const formData = new FormData();
+				formData.append('file', file);
+
+				const response = await apiService.upload(`/batch/${batchId}/products/upload`, formData, {
+					onUploadProgress: (progressEvent) => {
+						uploadedBytes[fileIndex] = progressEvent.loaded;
+						const currentTotalLoaded = uploadedBytes.reduce((sum, val) => sum + val, 0);
+						if (onUploadProgress) {
+							onUploadProgress({
+								loaded: currentTotalLoaded,
+								total: totalSize,
+							});
+						}
+					},
+				});
+
+				if (response.data && response.data.imageUrl) {
+					imageUrls[fileIndex] = response.data.imageUrl;
+				}
+			})
+		);
+	}
+
+	return {
+		message: 'Thêm sản phẩm thành công',
+		count: imageUrls.filter(Boolean).length,
+		imageUrls: imageUrls.filter(Boolean),
+	};
 };
