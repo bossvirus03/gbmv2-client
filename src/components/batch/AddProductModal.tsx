@@ -6,7 +6,7 @@ import { Upload } from "lucide-react";
 
 const compressImageIfNeeded = (
   file: File,
-  maxSizeBytes: number = 1 * 1024 * 1024,
+  maxSizeBytes: number = 295 * 1024, // Giới hạn dưới 300KB
 ): Promise<File> => {
   return new Promise((resolve) => {
     // Nếu kích thước đã nhỏ hơn maxSizeBytes thì không cần nén
