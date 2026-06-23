@@ -15,6 +15,8 @@ import {
   Calculator,
   PlusCircle,
   Terminal,
+  HardDrive,
+  RefreshCw,
 } from "lucide-react";
 
 import {
@@ -28,6 +30,94 @@ import { Avatar, AvatarImage, AvatarFallback } from "../components/ui/avatar";
 import { Sheet, SheetContent, SheetTrigger } from "../components/ui/sheet";
 import { Button } from "../components/ui/button";
 import { getAccessToken, clearAccessToken } from "../lib/asyncLocalstoragate";
+import { useR2StorageQuery, useRefreshR2StorageMutation } from "../hooks/useR2Storage";
+
+const formatBytes = (bytes: number, decimals = 2) => {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["B", "KB", "MB", "GB", "TB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+};
+
+const R2StorageWidget = () => {
+  const { data: stats, isLoading, error } = useR2StorageQuery();
+  const refreshMutation = useRefreshR2StorageMutation();
+
+  const handleRefresh = (e: React.MouseEvent) => {
+    e.preventDefault();
+    refreshMutation.mutate();
+  };
+
+  if (isLoading) {
+    return (
+      <div className="p-3 bg-slate-900/40 border border-slate-800/40 rounded-2xl flex items-center justify-between text-[11px] text-slate-400 mx-2 my-1">
+        <span className="flex items-center gap-2">
+          <HardDrive size={13} className="animate-pulse text-indigo-400" />
+          Đang tải dung lượng R2...
+        </span>
+      </div>
+    );
+  }
+
+  if (error || !stats) {
+    return (
+      <div className="p-3 bg-rose-950/20 border border-rose-900/30 rounded-2xl flex items-center justify-between text-[11px] text-rose-400 mx-2 my-1">
+        <span className="flex items-center gap-2">
+          <HardDrive size={13} />
+          Lỗi tải dung lượng R2
+        </span>
+      </div>
+    );
+  }
+
+  const isRefreshing = refreshMutation.isPending;
+  const isNearLimit = stats.usedPercentage >= 85;
+  const isCritical = stats.usedPercentage >= 95;
+
+  let progressColor = "bg-gradient-to-r from-blue-500 to-indigo-500";
+  if (isCritical) {
+    progressColor = "bg-gradient-to-r from-red-500 to-rose-600";
+  } else if (isNearLimit) {
+    progressColor = "bg-gradient-to-r from-amber-500 to-orange-500";
+  }
+
+  return (
+    <div className="p-3 bg-slate-900/50 border border-slate-800/40 rounded-2xl shadow-lg backdrop-blur-md mx-2 my-1">
+      <div className="flex items-center justify-between mb-1.5">
+        <div className="flex items-center gap-1.5 text-slate-300">
+          <HardDrive size={13} className={isRefreshing ? "text-indigo-400 animate-spin" : "text-indigo-400"} />
+          <span className="text-[10px] font-bold uppercase tracking-wider">Lưu trữ R2</span>
+        </div>
+        <button
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          className="text-slate-500 hover:text-slate-300 disabled:opacity-50 p-1 hover:bg-slate-850/60 rounded-md transition-all active:scale-95 cursor-pointer flex items-center justify-center"
+          title="Làm mới"
+        >
+          <RefreshCw size={10} className={isRefreshing ? "animate-spin" : ""} />
+        </button>
+      </div>
+
+      <div className="w-full bg-slate-850 rounded-full h-1 overflow-hidden mb-1.5">
+        <div
+          className={`h-full rounded-full transition-all duration-500 ${progressColor}`}
+          style={{ width: `${Math.min(100, stats.usedPercentage)}%` }}
+        />
+      </div>
+
+      <div className="flex items-center justify-between text-[9px] font-bold uppercase tracking-wider">
+        <span className="text-slate-400 font-bold">
+          {formatBytes(stats.usedBytes)} / {stats.maxGb} GB
+        </span>
+        <span className={isCritical ? "text-red-400 font-black animate-pulse" : isNearLimit ? "text-amber-400 font-bold" : "text-slate-300 font-bold"}>
+          {stats.usedPercentage}%
+        </span>
+      </div>
+    </div>
+  );
+};
 
 const menuGroups = [
   {
@@ -181,6 +271,11 @@ const SidebarLayout = () => {
           ))}
         </nav>
 
+        {/* R2 Storage Stats */}
+        <div className="px-4 py-2 border-t border-slate-900/60 bg-[#0b0f19]">
+          <R2StorageWidget />
+        </div>
+
         {/* User Profile Footer */}
         <div className="p-4 border-t border-slate-900/60 bg-[#0b0f19]">
           <div className="flex items-center justify-between p-2.5 rounded-2xl bg-slate-900/50 border border-slate-800/40 shadow-lg backdrop-blur-md">
@@ -283,6 +378,11 @@ const SidebarLayout = () => {
                   </div>
                 ))}
               </nav>
+
+              {/* R2 Storage Stats Mobile */}
+              <div className="px-4 py-2 border-t border-slate-900/60 bg-[#0b0f19]">
+                <R2StorageWidget />
+              </div>
 
               {/* User Profile Mobile */}
               <div className="p-4 border-t border-slate-900/60 bg-[#0b0f19]">

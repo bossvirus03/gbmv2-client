@@ -26,11 +26,15 @@ interface LogEntry {
 
 const SystemLogsPage: React.FC = () => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [status, setStatus] = useState<"connecting" | "connected" | "disconnected">("disconnected");
+  const [status, setStatus] = useState<
+    "connecting" | "connected" | "disconnected"
+  >("disconnected");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
   const [autoScroll, setAutoScroll] = useState(true);
-  const [expandedLogIndices, setExpandedLogIndices] = useState<Set<number>>(new Set());
+  const [expandedLogIndices, setExpandedLogIndices] = useState<Set<number>>(
+    new Set(),
+  );
 
   // Ref to log container for auto-scrolling
   const logContainerRef = useRef<HTMLDivElement>(null);
@@ -47,7 +51,7 @@ const SystemLogsPage: React.FC = () => {
 
     setStatus("connecting");
     const token = getAccessToken();
-    const url = `${API_BASE_URL}logs/stream?token=${encodeURIComponent(token || "")}`;
+    const url = `${API_BASE_URL}/logs/stream?token=${encodeURIComponent(token || "")}`;
 
     const es = new EventSource(url);
     eventSourceRef.current = es;
@@ -125,10 +129,12 @@ const SystemLogsPage: React.FC = () => {
     return logs.filter((log) => {
       const matchesSearch =
         log.message.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (log.context && log.context.toLowerCase().includes(searchQuery.toLowerCase()));
+        (log.context &&
+          log.context.toLowerCase().includes(searchQuery.toLowerCase()));
 
       const matchesLevel =
-        selectedLevels.length === 0 || selectedLevels.includes(log.level.toLowerCase());
+        selectedLevels.length === 0 ||
+        selectedLevels.includes(log.level.toLowerCase());
 
       return matchesSearch && matchesLevel;
     });
@@ -157,7 +163,8 @@ const SystemLogsPage: React.FC = () => {
     const content = filteredLogs
       .map(
         (log) =>
-          `[${log.timestamp}] [${log.level.toUpperCase()}] ${log.context ? `[${log.context}] ` : ""
+          `[${log.timestamp}] [${log.level.toUpperCase()}] ${
+            log.context ? `[${log.context}] ` : ""
           }${log.message}`,
       )
       .join("\n");
@@ -222,24 +229,28 @@ const SystemLogsPage: React.FC = () => {
             <Terminal size={18} />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-slate-200 tracking-wider">LOGS HỆ THỐNG</h2>
+            <h2 className="text-sm font-bold text-slate-200 tracking-wider">
+              LOGS HỆ THỐNG
+            </h2>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="relative flex h-2 w-2">
                 <span
-                  className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${status === "connected"
-                    ? "bg-emerald-400"
-                    : status === "connecting"
-                      ? "bg-amber-400"
-                      : "bg-red-400"
-                    }`}
+                  className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                    status === "connected"
+                      ? "bg-emerald-400"
+                      : status === "connecting"
+                        ? "bg-amber-400"
+                        : "bg-red-400"
+                  }`}
                 ></span>
                 <span
-                  className={`relative inline-flex rounded-full h-2 w-2 ${status === "connected"
-                    ? "bg-emerald-500"
-                    : status === "connecting"
-                      ? "bg-amber-500"
-                      : "bg-red-500"
-                    }`}
+                  className={`relative inline-flex rounded-full h-2 w-2 ${
+                    status === "connected"
+                      ? "bg-emerald-500"
+                      : status === "connecting"
+                        ? "bg-amber-500"
+                        : "bg-red-500"
+                  }`}
                 ></span>
               </span>
               <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
@@ -260,7 +271,10 @@ const SystemLogsPage: React.FC = () => {
               onClick={connectLogs}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600/90 hover:bg-emerald-600 text-white rounded-lg text-xs font-semibold shadow-md active:scale-95 transition-all duration-200 cursor-pointer"
             >
-              <RefreshCw size={13} className={status === "connecting" ? "animate-spin" : ""} />
+              <RefreshCw
+                size={13}
+                className={status === "connecting" ? "animate-spin" : ""}
+              />
               Kết nối lại
             </button>
           )}
@@ -286,10 +300,11 @@ const SystemLogsPage: React.FC = () => {
 
           <button
             onClick={() => setAutoScroll((prev) => !prev)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200 cursor-pointer ${autoScroll
-              ? "bg-indigo-650/40 text-indigo-300 border-indigo-800/40 shadow-inner"
-              : "bg-slate-800 text-slate-400 border-slate-700"
-              }`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200 cursor-pointer ${
+              autoScroll
+                ? "bg-indigo-650/40 text-indigo-300 border-indigo-800/40 shadow-inner"
+                : "bg-slate-800 text-slate-400 border-slate-700"
+            }`}
           >
             <Scroll size={13} className={autoScroll ? "text-indigo-400" : ""} />
             Cuộn tự động: {autoScroll ? "BẬT" : "TẮT"}
@@ -301,7 +316,10 @@ const SystemLogsPage: React.FC = () => {
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between p-3.5 bg-[#0b0f19]/70 border-b border-slate-800 gap-3">
         {/* Search */}
         <div className="relative flex-1 max-w-md">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+          <Search
+            size={14}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
+          />
           <input
             type="text"
             placeholder="Tìm kiếm log hoặc context..."
@@ -313,7 +331,9 @@ const SystemLogsPage: React.FC = () => {
 
         {/* Level Filters */}
         <div className="flex flex-wrap items-center gap-1.5 text-xs">
-          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mr-1.5">Lọc level:</span>
+          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mr-1.5">
+            Lọc level:
+          </span>
           {allLevels.map((lvl) => {
             const isSelected = selectedLevels.includes(lvl);
             const style = getLevelStyle(lvl);
@@ -321,10 +341,11 @@ const SystemLogsPage: React.FC = () => {
               <button
                 key={lvl}
                 onClick={() => toggleLevel(lvl)}
-                className={`px-2.5 py-1 rounded-md border text-[11px] font-bold uppercase transition-all duration-200 cursor-pointer ${isSelected
-                  ? `${style.text} ${style.bg} border-indigo-500/40 shadow-[0_0_10px_rgba(99,102,241,0.1)]`
-                  : "bg-slate-900/40 text-slate-500 border-slate-800 hover:border-slate-700 hover:text-slate-400"
-                  }`}
+                className={`px-2.5 py-1 rounded-md border text-[11px] font-bold uppercase transition-all duration-200 cursor-pointer ${
+                  isSelected
+                    ? `${style.text} ${style.bg} border-indigo-500/40 shadow-[0_0_10px_rgba(99,102,241,0.1)]`
+                    : "bg-slate-900/40 text-slate-500 border-slate-800 hover:border-slate-700 hover:text-slate-400"
+                }`}
               >
                 {lvl} ({stats[lvl] || 0})
               </button>
@@ -348,21 +369,30 @@ const SystemLogsPage: React.FC = () => {
       >
         {filteredLogs.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-slate-500 py-12">
-            <Scroll size={36} className="text-slate-650 opacity-40 mb-3 animate-pulse" />
-            <p className="font-semibold text-sm">Chưa có logs hệ thống hiển thị</p>
-            <p className="text-xs text-slate-600 mt-1">Đang chờ sự kiện hoặc không khớp với bộ lọc.</p>
+            <Scroll
+              size={36}
+              className="text-slate-650 opacity-40 mb-3 animate-pulse"
+            />
+            <p className="font-semibold text-sm">
+              Chưa có logs hệ thống hiển thị
+            </p>
+            <p className="text-xs text-slate-600 mt-1">
+              Đang chờ sự kiện hoặc không khớp với bộ lọc.
+            </p>
           </div>
         ) : (
           filteredLogs.map((log, index) => {
             const style = getLevelStyle(log.level);
             const isExpanded = expandedLogIndices.has(index);
-            const hasLongMessage = log.message.length > 150 || log.message.includes("\n");
+            const hasLongMessage =
+              log.message.length > 150 || log.message.includes("\n");
 
             return (
               <div
                 key={index}
-                className={`group border rounded-lg p-2.5 hover:bg-slate-900/35 transition-all duration-150 border-slate-900/40 hover:border-slate-800 ${style.bg
-                  }`}
+                className={`group border rounded-lg p-2.5 hover:bg-slate-900/35 transition-all duration-150 border-slate-900/40 hover:border-slate-800 ${
+                  style.bg
+                }`}
               >
                 {/* Main line info */}
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-2 justify-between">
@@ -374,8 +404,9 @@ const SystemLogsPage: React.FC = () => {
 
                     {/* Level badge */}
                     <span
-                      className={`px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider border ${style.badge
-                        }`}
+                      className={`px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider border ${
+                        style.badge
+                      }`}
                     >
                       {log.level}
                     </span>
@@ -390,8 +421,9 @@ const SystemLogsPage: React.FC = () => {
                     {/* Message snippet */}
                     <span
                       onClick={() => hasLongMessage && toggleExpand(index)}
-                      className={`text-slate-300 break-all ${hasLongMessage ? "cursor-pointer hover:text-white" : ""
-                        }`}
+                      className={`text-slate-300 break-all ${
+                        hasLongMessage ? "cursor-pointer hover:text-white" : ""
+                      }`}
                     >
                       {hasLongMessage && !isExpanded ? (
                         <>
@@ -412,7 +444,11 @@ const SystemLogsPage: React.FC = () => {
                       onClick={() => toggleExpand(index)}
                       className="text-slate-500 hover:text-slate-300 p-0.5 hover:bg-slate-800/80 rounded transition-colors self-end md:self-auto cursor-pointer"
                     >
-                      {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                      {isExpanded ? (
+                        <ChevronDown size={14} />
+                      ) : (
+                        <ChevronRight size={14} />
+                      )}
                     </button>
                   )}
                 </div>
@@ -432,11 +468,20 @@ const SystemLogsPage: React.FC = () => {
       {/* Terminal Footer Info */}
       <div className="p-2 px-4 bg-[#0b0f19] border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-500 font-bold uppercase tracking-wider">
         <div className="flex items-center gap-1.5">
-          <Wifi size={12} className={status === "connected" ? "text-emerald-500" : "text-slate-550"} />
-          <span>Thời gian thực: {status === "connected" ? "Đang bật" : "Tạm dừng"}</span>
+          <Wifi
+            size={12}
+            className={
+              status === "connected" ? "text-emerald-500" : "text-slate-550"
+            }
+          />
+          <span>
+            Thời gian thực: {status === "connected" ? "Đang bật" : "Tạm dừng"}
+          </span>
         </div>
         <div>
-          <span>Tổng log hiển thị: {filteredLogs.length}/{logs.length}</span>
+          <span>
+            Tổng log hiển thị: {filteredLogs.length}/{logs.length}
+          </span>
         </div>
       </div>
     </div>
