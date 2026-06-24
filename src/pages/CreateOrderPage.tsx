@@ -67,15 +67,17 @@ const CreateOrderPage = () => {
   // Action Handlers
   const handleCreateCustomer = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newCustName.trim() || !newCustPhone.trim()) {
-      toast.error("Vui lòng điền đầy đủ tên và số điện thoại.");
+    if (!newCustName.trim()) {
+      toast.error("Vui lòng điền tên khách hàng.");
       return;
     }
+
+    const phoneValue = newCustPhone.trim() || `temp_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
     createCustomerMutation.mutate(
       {
         name: newCustName.trim(),
-        phone: newCustPhone.trim(),
+        phone: phoneValue,
       },
       {
         onSuccess: (data) => {
@@ -594,12 +596,11 @@ const CreateOrderPage = () => {
 
                 <div>
                   <label className="block text-sm font-semibold mb-1.5 text-gray-700">
-                    Số điện thoại *
+                    Số điện thoại
                   </label>
                   <input
                     type="text"
-                    required
-                    placeholder="Ví dụ: 0987654321"
+                    placeholder="Ví dụ: 0987654321 (tùy chọn)"
                     value={newCustPhone}
                     onChange={(e) => setNewCustPhone(e.target.value)}
                     className="w-full border border-gray-200 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"

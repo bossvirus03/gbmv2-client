@@ -62,9 +62,13 @@ function CustomerPage() {
   };
 
   const onSubmit = (data: CustomerFormField) => {
+    const payload = {
+      ...data,
+      phone: data.phone.trim() || `temp_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+    };
     if (editingCustomer) {
       updateMutation.mutate(
-        { id: editingCustomer.id, data },
+        { id: editingCustomer.id, data: payload },
         {
           onError: (err: any) => {
             console.error(err);
@@ -73,7 +77,7 @@ function CustomerPage() {
         },
       );
     } else {
-      createMutation.mutate(data, {
+      createMutation.mutate(payload, {
         onError: (err: any) => {
           console.error(err);
           alert(err?.response?.data?.message || "❌ Lỗi khi thêm khách hàng");
@@ -217,17 +221,13 @@ function CustomerPage() {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                  Số điện thoại *
+                  Số điện thoại
                 </label>
                 <input
                   type="tel"
-                  placeholder="Nhập số điện thoại"
+                  placeholder="Nhập số điện thoại (tùy chọn)"
                   {...register("phone", {
-                    required: "Vui lòng nhập số điện thoại",
-                    pattern: {
-                      value: /^[0-9+]{9,12}$/,
-                      message: "Số điện thoại không hợp lệ (từ 9 đến 12 số)",
-                    },
+                    validate: (val) => !val || /^[0-9+]{9,12}$/.test(val) || "Số điện thoại không hợp lệ (từ 9 đến 12 số)",
                   })}
                   className="w-full px-5 py-4 border border-gray-200 rounded-2xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none text-sm"
                 />
