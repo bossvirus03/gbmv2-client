@@ -1,17 +1,19 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getCustomers, createCustomer, updateCustomer, deleteCustomer, Customer } from "@/services/customerService";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCustomersQueryBase } from "./customers/queries";
+import {
+  useCreateCustomerMutationBase,
+  useUpdateCustomerMutationBase,
+  useDeleteCustomerMutationBase,
+} from "./customers/mutations";
+import { Customer } from "@/services/customerService";
 
 export const useCustomersQuery = () => {
-  return useQuery<Customer[]>({
-    queryKey: ["customers"],
-    queryFn: getCustomers,
-  });
+  return useCustomersQueryBase();
 };
 
 export const useCreateCustomerMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: createCustomer,
+  return useCreateCustomerMutationBase({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       if (onSuccessCallback) onSuccessCallback();
@@ -21,8 +23,7 @@ export const useCreateCustomerMutation = (onSuccessCallback?: () => void) => {
 
 export const useUpdateCustomerMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<Customer> }) => updateCustomer(id, data),
+  return useUpdateCustomerMutationBase({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       if (onSuccessCallback) onSuccessCallback();
@@ -32,11 +33,13 @@ export const useUpdateCustomerMutation = (onSuccessCallback?: () => void) => {
 
 export const useDeleteCustomerMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: deleteCustomer,
+  return useDeleteCustomerMutationBase({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       if (onSuccessCallback) onSuccessCallback();
     },
   });
 };
+export type { Customer };
+
+

@@ -1,4 +1,5 @@
 import apiService from './api';
+import { API_ENDPOINTS } from './apiEndpoints';
 
 export interface R2StorageStats {
   usedBytes: number;
@@ -9,6 +10,7 @@ export interface R2StorageStats {
 }
 
 export const getR2StorageStats = async (forceRefresh = false): Promise<R2StorageStats> => {
-  const response = await apiService.get<R2StorageStats>(`/r2/storage?refresh=${forceRefresh}`);
+  const response = await apiService.get<R2StorageStats>(`${API_ENDPOINTS.R2.STORAGE}?refresh=${forceRefresh}`);
   return response.data;
 };
+

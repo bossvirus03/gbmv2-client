@@ -1,4 +1,5 @@
 import apiService from './api';
+import { API_ENDPOINTS } from './apiEndpoints';
 
 export type OrderItem = {
   id: number;
@@ -20,16 +21,17 @@ export type OrderItem = {
 };
 
 export const createOrderItem = async (data: Omit<OrderItem, 'id' | 'order'>) => {
-  const response = await apiService.post<OrderItem>('/order-items', data);
+  const response = await apiService.post<OrderItem>(API_ENDPOINTS.ORDER_ITEM.BASE, data);
   return response.data;
 };
 
 export const getOrderItems = async () => {
-  const response = await apiService.get<OrderItem[]>('/order-items');
+  const response = await apiService.get<OrderItem[]>(API_ENDPOINTS.ORDER_ITEM.BASE);
   return response.data;
 };
 
 export const updateOrderItem = async (id: number | string, data: Partial<Omit<OrderItem, 'id' | 'order'>>) => {
-  const response = await apiService.put<OrderItem>(`/order-items/${id}`, data);
+  const response = await apiService.put<OrderItem>(API_ENDPOINTS.ORDER_ITEM.DETAIL(id), data);
   return response.data;
 };
+

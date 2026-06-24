@@ -1,10 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createOrder } from "@/services/orderService";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCreateOrderMutationBase } from "./orders/mutations";
 
 export const useCreateOrderMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: createOrder,
+  return useCreateOrderMutationBase({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["batches"] });
       queryClient.invalidateQueries({ queryKey: ["orderItems"] });
@@ -13,3 +12,5 @@ export const useCreateOrderMutation = (onSuccessCallback?: () => void) => {
     },
   });
 };
+
+

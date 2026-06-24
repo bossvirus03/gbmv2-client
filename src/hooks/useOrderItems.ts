@@ -1,9 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-import { getOrderItems, OrderItem } from "@/services/orderItemService";
+import { useOrderItemsQueryBase } from "./orderItems/queries";
+import { OrderItem } from "@/services/orderItemService";
 
 export const useOrderItemsQuery = () => {
-  return useQuery<OrderItem[]>({
-    queryKey: ["orderItems"],
-    queryFn: getOrderItems,
-  });
+  return useOrderItemsQueryBase();
 };
+export type { OrderItem };

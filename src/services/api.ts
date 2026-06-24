@@ -1,9 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
-import { clearAccessToken, getAccessToken } from '../lib/asyncLocalstoragate';
+import axios, {
+  type AxiosInstance,
+  type AxiosRequestConfig,
+  type AxiosResponse,
+} from "axios";
+import { clearAccessToken, getAccessToken } from "../lib/asyncLocalstoragate";
 
 export const API_BASE_URL =
-  ((import.meta as any).env?.VITE_API_URL as string | undefined) || 'http://localhost:3000';
+  ((import.meta as any).env?.VITE_API_URL as string | undefined) ||
+  "http://localhost:3000";
+
+export const normalizeUrl = (url: string): string => {
+  if (!url) return '';
+  return url.replace(/(?<!:)\/{2,}/g, '/');
+};
 
 class ApiService {
   private api: AxiosInstance;
@@ -17,7 +27,7 @@ class ApiService {
     this.api.interceptors.request.use(
       (config) => {
         const token = getAccessToken();
-        
+
         if (token) {
           config.headers = config.headers ?? {};
           config.headers.Authorization = `Bearer ${token}`;
@@ -34,7 +44,7 @@ class ApiService {
 
         return config;
       },
-      (error) => Promise.reject(error)
+      (error) => Promise.reject(error),
     );
 
     this.api.interceptors.response.use(
@@ -49,44 +59,47 @@ class ApiService {
             return this.api(originalRequest);
           } catch (refreshError) {
             clearAccessToken();
-            window.location.href = '/login';
+            window.location.href = "/login";
             return Promise.reject(refreshError);
           }
         }
 
         return Promise.reject(error);
-      }
+      },
     );
   }
 
   public get<T = any>(url: string, config?: AxiosRequestConfig) {
-    return this.api.get<T>(url, config);
+    return this.api.get<T>(normalizeUrl(url), config);
   }
 
   public post<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.api.post<T>(url, data, config);
+    return this.api.post<T>(normalizeUrl(url), data, config);
   }
 
   public put<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.api.put<T>(url, data, config);
+    return this.api.put<T>(normalizeUrl(url), data, config);
   }
 
   public patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig) {
-    return this.api.patch<T>(url, data, config);
+    return this.api.patch<T>(normalizeUrl(url), data, config);
   }
 
   public delete<T = any>(url: string, config?: AxiosRequestConfig) {
-    return this.api.delete<T>(url, config);
+    return this.api.delete<T>(normalizeUrl(url), config);
   }
 
-  public upload<T = any>(url: string, formData: FormData, config?: AxiosRequestConfig) {
-    return this.api.post<T>(url, formData, {
+  public upload<T = any>(
+    url: string,
+    formData: FormData,
+    config?: AxiosRequestConfig,
+  ) {
+    return this.api.post<T>(normalizeUrl(url), formData, {
       timeout: 60000, // Tăng timeout cho tác vụ upload lên 60 giây
       ...config,
     });
   }
 }
 
-// Export instance
 const apiService = new ApiService();
 export default apiService;

@@ -1,17 +1,19 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getCapitals, createCapital, updateCapital, deleteCapital, Capital } from "@/services/capitalService";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCapitalsQueryBase } from "./capitals/queries";
+import {
+  useCreateCapitalMutationBase,
+  useUpdateCapitalMutationBase,
+  useDeleteCapitalMutationBase,
+} from "./capitals/mutations";
+import { Capital } from "@/services/capitalService";
 
 export const useCapitalsQuery = () => {
-  return useQuery<Capital[]>({
-    queryKey: ["capitals"],
-    queryFn: getCapitals,
-  });
+  return useCapitalsQueryBase();
 };
 
 export const useCreateCapitalMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: { amount: number; date?: string; content: string }) => createCapital(data),
+  return useCreateCapitalMutationBase({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["capitals"] });
       if (onSuccessCallback) onSuccessCallback();
@@ -21,9 +23,7 @@ export const useCreateCapitalMutation = (onSuccessCallback?: () => void) => {
 
 export const useUpdateCapitalMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, ...data }: { id: number; amount?: number; date?: string; content?: string }) =>
-      updateCapital(id, data),
+  return useUpdateCapitalMutationBase({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["capitals"] });
       if (onSuccessCallback) onSuccessCallback();
@@ -33,11 +33,13 @@ export const useUpdateCapitalMutation = (onSuccessCallback?: () => void) => {
 
 export const useDeleteCapitalMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (id: number) => deleteCapital(id),
+  return useDeleteCapitalMutationBase({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["capitals"] });
       if (onSuccessCallback) onSuccessCallback();
     },
   });
 };
+export type { Capital };
+
+

@@ -1,17 +1,15 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getUsers, createUser, deleteUser, User } from "@/services/userService";
+import { useQueryClient } from "@tanstack/react-query";
+import { useUsersQueryBase } from "./users/queries";
+import { useCreateUserMutationBase, useDeleteUserMutationBase } from "./users/mutations";
+import { User } from "@/services/userService";
 
 export const useUsersQuery = () => {
-  return useQuery<User[]>({
-    queryKey: ["users"],
-    queryFn: getUsers,
-  });
+  return useUsersQueryBase();
 };
 
 export const useCreateUserMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: createUser,
+  return useCreateUserMutationBase({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       if (onSuccessCallback) onSuccessCallback();
@@ -21,11 +19,13 @@ export const useCreateUserMutation = (onSuccessCallback?: () => void) => {
 
 export const useDeleteUserMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: deleteUser,
+  return useDeleteUserMutationBase({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       if (onSuccessCallback) onSuccessCallback();
     },
   });
 };
+export type { User };
+
+

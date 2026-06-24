@@ -1,4 +1,5 @@
 import apiService from './api';
+import { API_ENDPOINTS } from './apiEndpoints';
 
 export interface SystemSettings {
   id: number;
@@ -9,7 +10,7 @@ export interface SystemSettings {
 }
 
 export const getSettings = async (): Promise<SystemSettings> => {
-  const response = await apiService.get<SystemSettings>('/settings');
+  const response = await apiService.get<SystemSettings>(API_ENDPOINTS.SETTING.BASE);
   return response.data;
 };
 
@@ -19,6 +20,7 @@ export const updateSettings = async (data: {
   domesticShippingJpy?: number;
   serviceFeeRate?: number;
 }): Promise<SystemSettings> => {
-  const response = await apiService.post<SystemSettings>('/settings', data);
+  const response = await apiService.post<SystemSettings>(API_ENDPOINTS.SETTING.BASE, data);
   return response.data;
 };
+

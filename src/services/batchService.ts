@@ -1,4 +1,5 @@
 import apiService from './api';
+import { API_ENDPOINTS } from './apiEndpoints';
 
 export type BatchProduct = {
 	id: number;
@@ -31,37 +32,37 @@ export type SellPayload = {
 };
 
 export const getBatches = async () => {
-	const response = await apiService.get<Batch[]>('/batch');
+	const response = await apiService.get<Batch[]>(API_ENDPOINTS.BATCH.BASE);
 	return response.data;
 };
 
 export const getBatchById = async (batchId: string | number) => {
-	const response = await apiService.get<Batch>(`/batch/${batchId}`);
+	const response = await apiService.get<Batch>(API_ENDPOINTS.BATCH.DETAIL(batchId));
 	return response.data;
 };
 
 export const createOrder = async (payload: SellPayload) => {
-	const response = await apiService.post('/order', payload);
+	const response = await apiService.post(API_ENDPOINTS.ORDER.BASE, payload);
 	return response.data;
 };
 
 export const updateBatch = async (batchId: string | number, data: Partial<Batch>) => {
-	const response = await apiService.put(`/batch/${batchId}`, data);
+	const response = await apiService.put(API_ENDPOINTS.BATCH.DETAIL(batchId), data);
 	return response.data;
-}
+};
 
 export const createBatch = async (data: any) => {
-	const response = await apiService.post<Batch>('/batch', data);
+	const response = await apiService.post<Batch>(API_ENDPOINTS.BATCH.BASE, data);
 	return response.data;
 };
 
 export const addProductToBatch = async (batchId: string | number, data: { imageUrl: string }) => {
-	const response = await apiService.post(`/batch/${batchId}/products`, data);
+	const response = await apiService.post(API_ENDPOINTS.BATCH.PRODUCTS(batchId), data);
 	return response.data;
 };
 
 export const deleteProduct = async (batchId: string | number, productId: number) => {
-	const response = await apiService.delete(`/batch/${batchId}/products/${productId}`);
+	const response = await apiService.delete(API_ENDPOINTS.BATCH.PRODUCT_DETAIL(batchId, productId));
 	return response.data;
 };
 
@@ -83,7 +84,7 @@ export const addProductsWithImagesUpload = async (
 				const formData = new FormData();
 				formData.append('file', file);
 
-				const response = await apiService.upload(`/batch/${batchId}/products/upload`, formData, {
+				const response = await apiService.upload(API_ENDPOINTS.BATCH.UPLOAD(batchId), formData, {
 					onUploadProgress: (progressEvent) => {
 						uploadedBytes[fileIndex] = progressEvent.loaded;
 						const currentTotalLoaded = uploadedBytes.reduce((sum, val) => sum + val, 0);
@@ -109,3 +110,4 @@ export const addProductsWithImagesUpload = async (
 		imageUrls: imageUrls.filter(Boolean),
 	};
 };
+

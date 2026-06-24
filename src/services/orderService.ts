@@ -1,4 +1,5 @@
 import apiService from './api';
+import { API_ENDPOINTS } from './apiEndpoints';
 
 export type OrderStatus = 'DEPOSIT' | 'COMPLETED' | 'CANCELLED';
 
@@ -32,12 +33,12 @@ export type Order = {
 };
 
 export const getOrders = async () => {
-  const response = await apiService.get<Order[]>('/order');
+  const response = await apiService.get<Order[]>(API_ENDPOINTS.ORDER.BASE);
   return response.data;
 };
 
 export const getOrderById = async (id: number | string) => {
-  const response = await apiService.get<Order>(`/order/${id}`);
+  const response = await apiService.get<Order>(API_ENDPOINTS.ORDER.DETAIL(id));
   return response.data;
 };
 
@@ -47,7 +48,7 @@ export const createOrder = async (data: {
   items?: { productId: number; price: number; deposit: number }[];
   status?: string;
 }) => {
-  const response = await apiService.post<Order>('/order', data);
+  const response = await apiService.post<Order>(API_ENDPOINTS.ORDER.BASE, data);
   return response.data;
 };
 
@@ -60,17 +61,18 @@ export const createSellOrder = async (data: {
   status?: string;
   note?: string;
 }) => {
-  const response = await apiService.post<Order>('/order/sell', data);
+  const response = await apiService.post<Order>(API_ENDPOINTS.ORDER.SELL, data);
   return response.data;
 };
 
 export const updateOrder = async (id: number | string, data: Partial<Order>) => {
-  const response = await apiService.put<Order>(`/order/${id}`, data);
+  const response = await apiService.put<Order>(API_ENDPOINTS.ORDER.DETAIL(id), data);
   return response.data;
 };
 
 
 export const deleteOrder = async (id: number | string) => {
-  const response = await apiService.delete(`/order/${id}`);
+  const response = await apiService.delete(API_ENDPOINTS.ORDER.DETAIL(id));
   return response.data;
 };
+

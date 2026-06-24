@@ -1,17 +1,19 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getExpenses, createExpense, updateExpense, deleteExpense, Expense } from "@/services/expenseService";
+import { useQueryClient } from "@tanstack/react-query";
+import { useExpensesQueryBase } from "./expenses/queries";
+import {
+  useCreateExpenseMutationBase,
+  useUpdateExpenseMutationBase,
+  useDeleteExpenseMutationBase,
+} from "./expenses/mutations";
+import { Expense } from "@/services/expenseService";
 
 export const useExpensesQuery = () => {
-  return useQuery<Expense[]>({
-    queryKey: ["expenses"],
-    queryFn: getExpenses,
-  });
+  return useExpensesQueryBase();
 };
 
 export const useCreateExpenseMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: createExpense,
+  return useCreateExpenseMutationBase({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
       if (onSuccessCallback) onSuccessCallback();
@@ -21,8 +23,7 @@ export const useCreateExpenseMutation = (onSuccessCallback?: () => void) => {
 
 export const useUpdateExpenseMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<Expense> }) => updateExpense(id, data),
+  return useUpdateExpenseMutationBase({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
       if (onSuccessCallback) onSuccessCallback();
@@ -32,11 +33,13 @@ export const useUpdateExpenseMutation = (onSuccessCallback?: () => void) => {
 
 export const useDeleteExpenseMutation = (onSuccessCallback?: () => void) => {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: deleteExpense,
+  return useDeleteExpenseMutationBase({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
       if (onSuccessCallback) onSuccessCallback();
     },
   });
 };
+export type { Expense };
+
+
