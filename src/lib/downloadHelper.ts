@@ -14,6 +14,7 @@ export const downloadImagesAsZip = async (
   if (!folder) return;
 
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const cleanApiUrl = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL;
 
   let successCount = 0;
 
@@ -26,7 +27,7 @@ export const downloadImagesAsZip = async (
     }
 
     try {
-      const proxyUrl = `${API_URL}/proxy-download?url=${encodeURIComponent(url)}`;
+      const proxyUrl = `${cleanApiUrl}/proxy-download?url=${encodeURIComponent(url)}`;
       const response = await fetch(proxyUrl);
       if (!response.ok) {
         throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
@@ -91,11 +92,12 @@ export const downloadImagesDirectly = async (imageUrls: string[]) => {
   }
 
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const cleanApiUrl = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL;
 
   for (let idx = 0; idx < imageUrls.length; idx++) {
     const url = imageUrls[idx];
     try {
-      const downloadLink = `${API_URL}/proxy-download?url=${encodeURIComponent(url)}`;
+      const downloadLink = `${cleanApiUrl}/proxy-download?url=${encodeURIComponent(url)}`;
       
       const link = document.createElement("a");
       link.href = downloadLink;
